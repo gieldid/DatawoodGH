@@ -1,6 +1,6 @@
 using CsvHelper;
 using CsvHelper.Configuration;
-using csvModule.Properties;
+using CSVModule.Properties;
 using Grasshopper.Kernel;
 using System;
 using System.Globalization;
@@ -8,7 +8,7 @@ using System.IO;
 
 namespace csvModule
 {
-	public class csvModuleComponent : GH_Component
+	public class CSVModuleComponent : GH_Component
 	{
 
 		private static readonly string CSV_NAME = "Datawood.csv";
@@ -20,10 +20,10 @@ namespace csvModule
 		/// Subcategory the panel. If you use non-existing tab or panel names, 
 		/// new tabs/panels will automatically be created.
 		/// </summary>
-		public csvModuleComponent()
+		public CSVModuleComponent()
 		  : base("Datawood to csv", "csv",
 			"Adds datawood to csv",
-			"Display", "Data")
+			"Datawood", "Local")
 		{
 		}
 

@@ -1,11 +1,11 @@
-﻿using csvModule.Properties;
+﻿using CSVModule.Properties;
 using Grasshopper.Kernel;
 using System;
 using System.Drawing;
 
 namespace csvModule
 {
-	public class csvModuleInfo : GH_AssemblyInfo
+	public class CSVModuleInfo : GH_AssemblyInfo
 	{
 		public override string Name => "DatawoodToCSV";
 
