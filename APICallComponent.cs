@@ -22,8 +22,7 @@ namespace CSVModule
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddTextParameter("URL", "U", "Url of api to call", GH_ParamAccess.item);
-            pManager.AddTextParameter("Parameter", "P", "parameters for call", GH_ParamAccess.item);
-            pManager[1].Optional = true;
+            pManager.AddBooleanParameter("Enabled", "E", "Makes API call when enabled", GH_ParamAccess.item);
         }
 
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
@@ -33,20 +32,20 @@ namespace CSVModule
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            string url = "";
-            string parameter = "";
-            string result = "";
-
+            string url = null;
+            string result = null;
+            bool enabled = false;
             if (!DA.GetData(0, ref url)) return;
-            DA.GetData(1, ref parameter);
+            if (!DA.GetData(1, ref enabled)) return;
 
-            using (WebClient wc = new WebClient())
-            {
-                result = wc.DownloadString(url);
+            if (enabled) { 
+                using (WebClient wc = new WebClient())
+                {
+                    result = wc.DownloadString(url);
+                }
+
+                DA.SetData(0, result);
             }
-
-
-            DA.SetData(0, result);
         }
 
         /// <summary>
