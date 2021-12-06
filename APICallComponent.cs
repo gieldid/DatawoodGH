@@ -38,13 +38,19 @@ namespace CSVModule
             if (!DA.GetData(0, ref url)) return;
             if (!DA.GetData(1, ref enabled)) return;
 
-            if (enabled) { 
-                using (WebClient wc = new WebClient())
+            if (enabled) {
+                try
                 {
-                    result = wc.DownloadString(url);
-                }
+                    using (WebClient wc = new WebClient())
+                    {
+                        result = wc.DownloadString(url);
+                    }
 
-                DA.SetData(0, result);
+                    DA.SetData(0, result);
+                }
+                catch (WebException webex) {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, webex.Message);
+                }
             }
         }
 
