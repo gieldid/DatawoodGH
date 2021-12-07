@@ -73,6 +73,16 @@ namespace CSVModule.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
+        internal static System.Drawing.Icon datawoodftp {
+            get {
+                object obj = ResourceManager.GetObject("datawoodftp", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
         internal static System.Drawing.Icon datwoodcsv {
             get {
                 object obj = ResourceManager.GetObject("datwoodcsv", resourceCulture);
