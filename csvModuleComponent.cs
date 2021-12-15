@@ -147,7 +147,7 @@ namespace csvModule
 			}
 			DA.GetData(14, ref run);
 			DA.GetData(15, ref name);
-			if (DA.GetData(16, ref location)) {
+			if (!DA.GetData(16, ref location)) {
 				return;
 			}
 
@@ -211,7 +211,7 @@ namespace csvModule
 				using (var writer = new StreamWriter(fullPath))
 				using (var csv = new CsvWriter(writer, config))
 				{
-					csv.Context.RegisterClassMap<DataWoodMap>();
+					//csv.Context.RegisterClassMap<DataWoodMap>();
 					csv.WriteHeader<DataWood>();
 					csv.NextRecord();
 					csv.WriteRecord(datawood);

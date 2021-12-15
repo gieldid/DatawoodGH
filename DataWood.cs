@@ -27,7 +27,6 @@ namespace csvModule
 	public class DataWoodMap : ClassMap<DataWood> {
 		public DataWoodMap() {
 			AutoMap(CultureInfo.InvariantCulture);
-			Map(m => m.MoistureContent).Optional();
 		}
 	}
 }
