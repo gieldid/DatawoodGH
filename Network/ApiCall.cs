@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using CSVModule.Properties;
+using DatawoodGH.Network;
+using DatawoodGH.Properties;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 
 namespace CSVModule
 {
-    public class APICallComponent : GH_Component
+    public class ApiCall : NetworkComponent
     {
         /// <summary>
         /// Initializes a new instance of the APICallComponent class.
         /// </summary>
-        public APICallComponent()
+        public ApiCall()
           : base("API Call", "API",
-            "Send get call to an api and retrieve result",
-            "Datawood", "Network")
+            "Send get call to an api and retrieve result"
+            )
         {
         }
 

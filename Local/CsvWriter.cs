@@ -1,6 +1,7 @@
 using CsvHelper;
 using CsvHelper.Configuration;
-using CSVModule.Properties;
+using DatawoodGH.Local;
+using DatawoodGH.Properties;
 using Grasshopper.Kernel;
 using System;
 using System.Globalization;
@@ -8,7 +9,7 @@ using System.IO;
 
 namespace csvModule
 {
-	public class CSVModuleComponent : GH_Component
+	public class CsvWriter : LocalComponent
 	{
 
 		private static readonly string CSV_NAME = "Datawood.csv";
@@ -20,10 +21,9 @@ namespace csvModule
 		/// Subcategory the panel. If you use non-existing tab or panel names, 
 		/// new tabs/panels will automatically be created.
 		/// </summary>
-		public CSVModuleComponent()
+		public CsvWriter()
 		  : base("Datawood to csv", "csv",
-			"Adds datawood to csv",
-			"Datawood", "Local")
+			"Adds datawood to csv")
 		{
 		}
 
@@ -168,7 +168,7 @@ namespace csvModule
 				{
 					using (var stream = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
 					using (var writer = new StreamWriter(stream))
-					using (var csv = new CsvWriter(writer, config))
+					using (var csv = new CsvHelper.CsvWriter(writer, config))
 					{
 						csv.WriteRecord(datawood);
 						csv.NextRecord();
@@ -177,7 +177,7 @@ namespace csvModule
 				else
 				{
 					using (var writer = new StreamWriter(fullPath))
-					using (var csv = new CsvWriter(writer, config))
+					using (var csv = new CsvHelper.CsvWriter(writer, config))
 					{
 						csv.WriteHeader<DataWood>();
 						csv.NextRecord();

@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using CSVModule.Properties;
+using DatawoodGH.Network;
+using DatawoodGH.Properties;
 using Grasshopper.Kernel;
 using Renci.SshNet;
 using Rhino.Geometry;
 
 namespace CSVModule
 {
-    public class FTPComponent : GH_Component
+    public class FtpTransfer : NetworkComponent
     {
         /// <summary>
         /// Initializes a new instance of the FTPComponent class.
         /// </summary>
-        public FTPComponent()
+        public FtpTransfer()
           : base("FTPComponent", "FTP",
-              "FTP component to transfer files over",
-              "Datawood", "Network")
+              "FTP component to transfer files over")
         {
         }
 
