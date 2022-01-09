@@ -9,7 +9,7 @@ using System.IO;
 
 namespace csvModule
 {
-	public class CsvWriter : LocalComponent
+	public class CsvCreator : LocalComponent
 	{
 
 		private static readonly string CSV_NAME = "Datawood.csv";
@@ -21,7 +21,7 @@ namespace csvModule
 		/// Subcategory the panel. If you use non-existing tab or panel names, 
 		/// new tabs/panels will automatically be created.
 		/// </summary>
-		public CsvWriter()
+		public CsvCreator()
 		  : base("Datawood to csv", "csv",
 			"Adds datawood to csv")
 		{
@@ -47,8 +47,13 @@ namespace csvModule
 			pManager.AddTextParameter("Picture Path", "PP", "Path to the picture of object", GH_ParamAccess.item);
 			pManager.AddTextParameter("Delimter", "D", "The delimter seperating values in the csv", GH_ParamAccess.item, ";");
 			pManager.AddBooleanParameter("Run", "R", "To run application", GH_ParamAccess.item, true);
+			pManager.AddTextParameter("Name", "N", "csv file name", GH_ParamAccess.item, CSV_NAME);
+			pManager.AddTextParameter("Location", "L", "Location where the object is physically stored", GH_ParamAccess.item);
 			//This is the Time parameter, if it's not set it will use DateTime.Now as default.
 			Params.Input[8].Optional = true;
+			//Moisture content
+			Params.Input[11].Optional = true;
+			
 		}
 
 		/// <summary>
@@ -66,22 +71,24 @@ namespace csvModule
 		/// to store data in output parameters.</param>
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
-			string path = "";
+			string path = null;
 			int index = 0;
 			int width = 0;
 			int length = 0;
 			int height = 0;
-			string type = "";
-			int typeCeraintry =0;
-			string color = "";
+			string type = null;
+			int typeCertainty =0;
+			string color = null;
 			DateTime time = new DateTime();
 			double density = 0;
 			int weight = 0;
-			double moistureContent = 0;
-			string picturePath = "";
-			string delimiter = "";
+			double? moistureContent = null;
+			string picturePath = null;
+			string delimiter = null;
 			bool run = true;
-
+			string name = null;
+			string location = null;
+			
 			if (!DA.GetData(0, ref path)) {
 				return;
 			}
@@ -105,7 +112,7 @@ namespace csvModule
 			{
 				return;
 			}
-			if (!DA.GetData(6, ref typeCeraintry))
+			if (!DA.GetData(6, ref typeCertainty))
 			{
 				return;
 			}
@@ -125,10 +132,11 @@ namespace csvModule
 			{
 				return;
 			}
-			if (!DA.GetData(11, ref moistureContent))
-			{
-				return;
+
+			if (!DA.GetData(11, ref moistureContent)) {
+				moistureContent = null;
 			}
+			
 			if (!DA.GetData(12, ref picturePath))
 			{
 				return;
@@ -138,11 +146,13 @@ namespace csvModule
 				return;
 			}
 			DA.GetData(14, ref run);
+			DA.GetData(15, ref name);
+			if (!DA.GetData(16, ref location)) {
+				return;
+			}
+
 			if (run)
 			{
-				string[] paths = { path, CSV_NAME };
-				string fullPath = Path.Combine(paths);
-
 				DataWood datawood = new DataWood
 				{
 					Index = index,
@@ -150,49 +160,69 @@ namespace csvModule
 					Length = length,
 					Height = height,
 					Type = type,
-					TypeCertainty = typeCeraintry,
+					TypeCertainty = typeCertainty,
 					Color = color,
 					Indexed = time,
 					Density = density,
 					Weight = weight,
 					MoistureContent = moistureContent,
-					PicturePath = picturePath
+					PicturePath = picturePath,
+					Location = location
 				};
-
-				var config = new CsvConfiguration(CultureInfo.InvariantCulture)
-				{
-					Delimiter = delimiter
-				};
-
-				if (File.Exists(fullPath))
-				{
-					using (var stream = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
-					using (var writer = new StreamWriter(stream))
-					using (var csv = new CsvHelper.CsvWriter(writer, config))
-					{
-						csv.WriteRecord(datawood);
-						csv.NextRecord();
-					}
-				}
-				else
-				{
-					using (var writer = new StreamWriter(fullPath))
-					using (var csv = new CsvHelper.CsvWriter(writer, config))
-					{
-						csv.WriteHeader<DataWood>();
-						csv.NextRecord();
-						csv.WriteRecord(datawood);
-						csv.NextRecord();
-					}
-
-				}
-
-				DA.SetData(0, fullPath);
+				var result = WriteTOCSV(datawood, path, name, delimiter);
+				DA.SetData(0, result);
 			}
 			else {
 				return;
 			}
 		}
+
+
+		/// <summary>
+		/// Creates a new csv file or appends to it
+		/// </summary>
+		/// <param name="datawood">The object that should be written to the csv</param>
+		/// <param name="path">dir path</param>
+		/// <param name="name">file name</param>
+		/// <param name="delimiter">Delimter used in the csv</param>
+		/// <returns></returns>
+		private string WriteTOCSV(DataWood datawood, string path, string name, string delimiter) {
+			string[] paths = { path, name };
+			string fullPath = Path.Combine(paths);
+
+			var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+			{
+				Delimiter = delimiter
+			};
+
+			if (File.Exists(fullPath))
+			{
+				using (var stream = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+				using (var writer = new StreamWriter(stream))
+				using (var csv = new CsvWriter(writer, config))
+				{
+					csv.Context.RegisterClassMap<DataWoodMap>();
+					csv.WriteRecord(datawood);
+					csv.NextRecord();
+				}
+			}
+			else
+			{
+				using (var writer = new StreamWriter(fullPath))
+				using (var csv = new CsvWriter(writer, config))
+				{
+					//csv.Context.RegisterClassMap<DataWoodMap>();
+					csv.WriteHeader<DataWood>();
+					csv.NextRecord();
+					csv.WriteRecord(datawood);
+					csv.NextRecord();
+				}
+
+			}
+
+			return fullPath;
+		}
+
 
 		/// <summary>
 		/// Provides an Icon for every component that will be visible in the User Interface.
