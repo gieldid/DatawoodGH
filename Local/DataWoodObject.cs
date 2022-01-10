@@ -5,7 +5,7 @@ using CsvHelper.Configuration.Attributes;
 
 namespace csvModule
 {
-	public class DataWood
+	public class DataWoodObject
 	{	
 		public int Index { get; set; }
 		public int Width { get; set; }
@@ -24,7 +24,7 @@ namespace csvModule
 
 	}
 
-	public class DataWoodMap : ClassMap<DataWood> {
+	public class DataWoodMap : ClassMap<DataWoodObject> {
 		public DataWoodMap() {
 			AutoMap(CultureInfo.InvariantCulture);
 		}

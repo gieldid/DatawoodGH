@@ -153,7 +153,7 @@ namespace csvModule
 
 			if (run)
 			{
-				DataWood datawood = new DataWood
+				DataWoodObject datawood = new DataWoodObject
 				{
 					Index = index,
 					Width = width,
@@ -186,7 +186,7 @@ namespace csvModule
 		/// <param name="name">file name</param>
 		/// <param name="delimiter">Delimter used in the csv</param>
 		/// <returns></returns>
-		private string WriteTOCSV(DataWood datawood, string path, string name, string delimiter) {
+		private string WriteTOCSV(DataWoodObject datawood, string path, string name, string delimiter) {
 			string[] paths = { path, name };
 			string fullPath = Path.Combine(paths);
 
@@ -212,7 +212,7 @@ namespace csvModule
 				using (var csv = new CsvWriter(writer, config))
 				{
 					//csv.Context.RegisterClassMap<DataWoodMap>();
-					csv.WriteHeader<DataWood>();
+					csv.WriteHeader<DataWoodObject>();
 					csv.NextRecord();
 					csv.WriteRecord(datawood);
 					csv.NextRecord();
