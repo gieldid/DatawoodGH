@@ -11,6 +11,9 @@ namespace CSVModule.Network
 {
     public class SocketClient : NetworkComponent
     {
+        private const string MOVE_L = "MoveL";
+        private const string MOVE_ABSJ = "MoveAbsJ";
+
         /// <summary>
         /// Initializes a new instance of the WebSocketComponent class.
         /// </summary>
@@ -27,7 +30,9 @@ namespace CSVModule.Network
         {
             pManager.AddTextParameter("Ip", "IP", "IP to make a web socket connection to", GH_ParamAccess.item);
             pManager.AddIntegerParameter("Port","P","Port for the socket connection",GH_ParamAccess.item);
+            pManager.AddTextParameter("Targets", "T", "Robottargets", GH_ParamAccess.list);
             pManager.AddBooleanParameter("Run", "R", "When to run", GH_ParamAccess.item, true);
+
         }
 
         /// <summary>
@@ -47,26 +52,36 @@ namespace CSVModule.Network
             string ip = null;
             int port = 0;
             bool run = true;
+            List<string> targets = new List<string>();
 
-
-            if (!DA.GetData(0, ref ip)) {
+            if (!DA.GetData("Ip", ref ip)) {
                 return;
             }
 
-            if (!DA.GetData(1, ref port)) {
+            if (!DA.GetData("Port", ref port)) {
                 return;
             }
 
-            DA.GetData(2, ref run);
+            if (!DA.GetDataList("Targets", targets)) {
+                return;
+            }
+
+            DA.GetData("Run", ref run);
             
             if (run) {
-                SocketConnection(ip, port);
-
+                Socket client = SocketConnection(ip, port);
+                SendTargets(client, targets);
+                CloseConnection(client);
             }
         }
 
-        private void SocketConnection(string ip, int port) {
-            byte[] bytes = new byte[1024];
+		private void CloseConnection(Socket client)
+		{
+            client.Shutdown(SocketShutdown.Both);
+            client.Close();
+        }
+
+		private Socket SocketConnection(string ip, int port) {        
             IPHostEntry ipHostInfo = Dns.GetHostEntry(ip);
             IPAddress ipAddress = ipHostInfo.AddressList[0];
             IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
@@ -79,13 +94,73 @@ namespace CSVModule.Network
             byte[] payload = Encoding.UTF8.GetBytes("listening?");
             client.Send(payload);
 
+            byte[] bytes = new byte[1024];
             int bytesRec = client.Receive(bytes);
-            this.Message = "Received the following: " + Encoding.UTF8.GetString(bytes, 0, bytesRec);
-            client.Shutdown(SocketShutdown.Both);
-            client.Close();
+            string answer = Encoding.UTF8.GetString(bytes, 0, bytesRec);
+            this.Message = "Received the following: " + answer;
+            if (answer != "Yes") {
+                CloseConnection(client);
+            }
+            return client;
         }
 
+        private void SendTargets(Socket client, List<string> targets) {
+            foreach (var target in targets) {
 
+                string[] messages = RAPIDToTargets(target);
+
+                foreach(var message in messages) {
+                    byte[] payload = Encoding.UTF8.GetBytes(message);
+                    client.Send(payload);
+                    System.Threading.Thread.Sleep(50);
+                }
+                //Send target
+
+
+                //Reply from server
+                byte[] bytes = new byte[1024];
+                int bytesRec = client.Receive(bytes);
+                string answer = Encoding.UTF8.GetString(bytes, 0, bytesRec);
+                if (answer != "ready") { 
+                    return; 
+                }
+            }
+        }
+
+        /// <summary>
+        /// Splits the received RAPID string into following targets
+        /// 1 Type of move
+        /// 2 robjoint
+        /// 3 Speed
+        /// </summary>
+        /// <param name="RAPID"></param>
+        /// <returns></returns>
+        private string[] RAPIDToTargets(string RAPID) {
+            string[] targets = new string[3];
+
+
+            if (RAPID.Contains(MOVE_L)) {
+                targets[0] = MOVE_L;
+                
+            } else if (RAPID.Contains(MOVE_ABSJ)) {
+                targets[0] = MOVE_ABSJ;
+            }
+
+            int openBracket = RAPID.IndexOf("[");
+            int closeBracket = RAPID.LastIndexOf("]") + 1;
+            targets[1] = RAPID.Substring(openBracket, closeBracket - openBracket);
+
+            RAPID = RAPID.Remove(0, closeBracket);
+            string[] values = RAPID.Split(',');
+
+            foreach (var value in values) {
+                if (value.Contains("Speed")) {
+                    targets[2] = value;
+                }
+            }
+            
+            return targets;
+        }
 
         /// <summary>
         /// Provides an Icon for the component.
