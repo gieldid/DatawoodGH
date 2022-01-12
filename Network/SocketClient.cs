@@ -114,7 +114,6 @@ namespace CSVModule.Network
                     client.Send(payload);
                     System.Threading.Thread.Sleep(50);
                 }
-                //Send target
 
 
                 //Reply from server
@@ -125,6 +124,8 @@ namespace CSVModule.Network
                     return; 
                 }
             }
+            //byte[] end_payload = Encoding.UTF8.GetBytes("No more targets");
+            //client.Send(end_payload);
         }
 
         /// <summary>
