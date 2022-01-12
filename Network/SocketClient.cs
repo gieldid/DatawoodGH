@@ -106,9 +106,9 @@ namespace CSVModule.Network
         }
 
         private void SendTargets(Socket client, List<string> targets) {
-            foreach (var target in targets) {
-
-                List<string> messages = RAPIDToTargets(target);
+			for (int i = 0; i < targets.Count; i++)
+			{
+                List<string> messages = RAPIDToTargets(targets[i]);
 
                 foreach(var message in messages) {
                     byte[] payload = Encoding.UTF8.GetBytes(message);
@@ -124,10 +124,19 @@ namespace CSVModule.Network
                 if (answer != "ready") { 
                     return; 
                 }
+
+                byte[] end_payload;
+                if (i == targets.Count -1)
+                {
+                     end_payload = Encoding.UTF8.GetBytes("No more targets");
+                }
+                else {
+                    end_payload = Encoding.UTF8.GetBytes("Sending next target");
+                }
+                client.Send(end_payload);
             }
-            //byte[] end_payload = Encoding.UTF8.GetBytes("No more targets");
-            //client.Send(end_payload);
-        }
+
+		}
 
         /// <summary>
         /// Splits the received RAPID string into following targets

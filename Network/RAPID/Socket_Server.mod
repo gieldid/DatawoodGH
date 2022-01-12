@@ -8,11 +8,12 @@
 	VAR string recv_ext;
     VAR string recv_pos_robjoint;
     VAR string recv_orient;
+    VAR string recv_next_target;
     VAR pos to_point_pos;
     VAR orient to_point_orient;
     VAR extjoint ext_joint;
     VAR robjoint to_rob_joint;
-	VAR bool keep_scanning;
+	VAR bool keep_receiving_targets;
     VAR bool filler_bool;
     
     VAR confdata conf := [0,0,0,0];
@@ -26,56 +27,58 @@
     VAR speeddata current_speed;
 
     PROC main()
-
-        ! Close any leftover sockets.
-		SocketClose client_socket;
-		SocketClose server_socket;
-
         SocketCreate server_socket;
-		SocketBind server_socket, "127.0.0.1", 1025;
+        SocketBind server_socket, "127.0.0.1", 1025;
 		SocketListen server_socket;
-		SocketAccept server_socket, client_socket \Time:=WAIT_MAX;
-        
-        keep_scanning := TRUE;
-        recv_string1 := ClientSync();
-        
-        IF(recv_string1 = "ok") THEN
-            WHILE keep_scanning DO
-                
-                !recv_string1 := ClientSync();
-                SocketReceive client_socket \Str:=recv_method \Time:=3;
-                SocketReceive client_socket \Str:=recv_speed \Time:=3;
-                SocketReceive client_socket \Str:=recv_ext \Time:=3;
-                SocketReceive client_socket \Str:=recv_pos_robjoint \Time:=3;
-                
-                
-                IF recv_speed = "Speed000" THEN
-                    current_speed := Speed000;
-                ELSEIF recv_speed = "Speed001" THEN
-                    current_speed := Speed001;
-                ENDIF
-
-                filler_bool:= StrToVal(recv_ext, ext_joint);
-
-                IF recv_method = "MoveL" THEN
-                    SocketReceive client_socket \Str:=recv_orient \Time:=3;
-                    filler_bool:=StrToVal(recv_pos_robjoint, to_point_pos);
-                    filler_bool:= StrToVal(recv_orient, to_point_orient);
-                    MoveL [to_point_pos,to_point_orient,conf,ext_joint],current_speed,Zone001,T_TEXT_01 \WObj:=DefaultFrame;    
-                ELSEIF recv_method = "MoveAbsJ" THEN
-                    filler_bool:= StrToVal(recv_pos_robjoint, to_rob_joint);
-                    MoveAbsJ [to_rob_joint,ext_joint],current_speed,Zone000,T_TEXT_01;
-                ENDIF
-                
-                WaitTime \InPos,0;
-                SocketSend client_socket \Str:="ready";
-            ENDWHILE
-        ENDIF
+	
+        WHILE TRUE DO
+            SocketAccept server_socket, client_socket \Time:=WAIT_MAX;
+            keep_receiving_targets := TRUE;
+            recv_string1 := ClientSync();            
+            IF(recv_string1 = "ok") THEN
+                WHILE keep_receiving_targets DO
+                    SocketReceive client_socket \Str:=recv_method \Time:=3;
+                    SocketReceive client_socket \Str:=recv_speed \Time:=3;
+                    SocketReceive client_socket \Str:=recv_ext \Time:=3;
+                    SocketReceive client_socket \Str:=recv_pos_robjoint \Time:=3;
+                    
+                    
+                    IF recv_speed = "Speed000" THEN
+                        current_speed := Speed000;
+                    ELSEIF recv_speed = "Speed001" THEN
+                        current_speed := Speed001;
+                    ENDIF
+    
+                    filler_bool:= StrToVal(recv_ext, ext_joint);
+    
+                    IF recv_method = "MoveL" THEN
+                        SocketReceive client_socket \Str:=recv_orient \Time:=3;
+                        filler_bool:=StrToVal(recv_pos_robjoint, to_point_pos);
+                        filler_bool:= StrToVal(recv_orient, to_point_orient);
+                        !MoveL [to_point_pos,to_point_orient,conf,ext_joint],current_speed,Zone001,T_TEXT_01 \WObj:=DefaultFrame;    
+                    ELSEIF recv_method = "MoveAbsJ" THEN
+                        filler_bool:= StrToVal(recv_pos_robjoint, to_rob_joint);
+                        MoveAbsJ [to_rob_joint,ext_joint],current_speed,Zone000,T_TEXT_01;
+                    ENDIF
+                    
+                    WaitTime \InPos,0;
+                    SocketSend client_socket \Str:="ready";
+                    SocketReceive client_socket \Str:=recv_next_target \Time:=3;
+                    IF recv_next_target = "No more targets" THEN
+                        keep_receiving_targets:= FALSE;
+                        SocketClose client_socket;
+                    ENDIF
+                ENDWHILE
+            ENDIF
+        ENDWHILE
         !ERROR
            ! IF ERRNO=ERR_SOCK_TIMEOUT THEN
                ! keep_scanning := FALSE;
                 !RETURN;
             !ENDIF
+    UNDO
+        SocketClose client_socket;
+		SocketClose server_socket;
     ENDPROC
     
 	! Wait until the client sends a string.
