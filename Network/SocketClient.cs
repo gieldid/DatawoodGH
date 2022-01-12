@@ -6,6 +6,7 @@ using Rhino.Geometry;
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
+using DatawoodGH.Utils;
 
 namespace CSVModule.Network
 {
@@ -107,12 +108,12 @@ namespace CSVModule.Network
         private void SendTargets(Socket client, List<string> targets) {
             foreach (var target in targets) {
 
-                string[] messages = RAPIDToTargets(target);
+                List<string> messages = RAPIDToTargets(target);
 
                 foreach(var message in messages) {
                     byte[] payload = Encoding.UTF8.GetBytes(message);
                     client.Send(payload);
-                    System.Threading.Thread.Sleep(50);
+                    System.Threading.Thread.Sleep(500);
                 }
 
 
@@ -136,32 +137,57 @@ namespace CSVModule.Network
         /// </summary>
         /// <param name="RAPID"></param>
         /// <returns></returns>
-        private string[] RAPIDToTargets(string RAPID) {
-            string[] targets = new string[3];
+        private List<string> RAPIDToTargets(string RAPID) {
+            List<string> targets = new List<string>();
+            targets.Add(GetSpeed(RAPID));
+            targets.Add(GetExtJoint(RAPID));
+            targets.Add(GetPosOrRobJoint(RAPID));
 
 
             if (RAPID.Contains(MOVE_L)) {
-                targets[0] = MOVE_L;
-                
+                targets.Insert(0, MOVE_L);
+                targets.Add(GetOrient(RAPID));
             } else if (RAPID.Contains(MOVE_ABSJ)) {
-                targets[0] = MOVE_ABSJ;
-            }
-
-            int openBracket = RAPID.IndexOf("[");
-            int closeBracket = RAPID.LastIndexOf("]") + 1;
-            targets[1] = RAPID.Substring(openBracket, closeBracket - openBracket);
-
-            RAPID = RAPID.Remove(0, closeBracket);
-            string[] values = RAPID.Split(',');
-
-            foreach (var value in values) {
-                if (value.Contains("Speed")) {
-                    targets[2] = value;
-                }
+                targets.Insert(0,MOVE_ABSJ);
             }
             
             return targets;
         }
+
+        private string GetSpeed(string RAPID) {
+            string[] values = RAPID.Split(',');
+            string speed = null;
+            foreach (var value in values)
+            {
+                if (value.Contains("Speed"))
+                {
+                    speed = value;
+                }
+            }
+            return speed;
+        }
+
+        private string GetPosOrRobJoint(string RAPID) {
+            int openBracket = Utils.GetNthIndex(RAPID, '[', 2) ;
+            int closeBracket = RAPID.IndexOf(']') + 1;
+
+            return RAPID.Substring(openBracket, closeBracket - openBracket);
+        }
+
+        private string GetOrient(string RAPID) {
+            int openBracket = Utils.GetNthIndex(RAPID, '[', 3);
+            int closeBracket = Utils.GetNthIndex(RAPID, ']', 2) + 1;
+
+            return RAPID.Substring(openBracket, closeBracket - openBracket);
+        }
+
+        private string GetExtJoint(string RAPID) {
+            int openBracket = RAPID.LastIndexOf('[');
+            int closeBracket = RAPID.LastIndexOf(']');
+
+            return RAPID.Substring(openBracket, closeBracket - openBracket);
+        }
+
 
         /// <summary>
         /// Provides an Icon for the component.
