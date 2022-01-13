@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text;
 using DatawoodGH.Utils;
+using DatawoodGH.Properties;
 
 namespace CSVModule.Network
 {
@@ -31,9 +32,10 @@ namespace CSVModule.Network
         {
             pManager.AddTextParameter("Ip", "IP", "IP to make a web socket connection to", GH_ParamAccess.item);
             pManager.AddIntegerParameter("Port","P","Port for the socket connection",GH_ParamAccess.item);
-            pManager.AddTextParameter("Targets", "T", "Robottargets", GH_ParamAccess.list);
+            //pManager.AddTextParameter("Targets", "T", "Robottargets", GH_ParamAccess.list);
+            pManager.AddTextParameter("Mod file", "m", "Mod file to read", GH_ParamAccess.item);
             pManager.AddBooleanParameter("Run", "R", "When to run", GH_ParamAccess.item, true);
-
+            
         }
 
         /// <summary>
@@ -53,7 +55,8 @@ namespace CSVModule.Network
             string ip = null;
             int port = 0;
             bool run = true;
-            List<string> targets = new List<string>();
+            string path = null;
+            //List<string> targets = new List<string>();
 
             if (!DA.GetData("Ip", ref ip)) {
                 return;
@@ -63,25 +66,40 @@ namespace CSVModule.Network
                 return;
             }
 
-            if (!DA.GetDataList("Targets", targets)) {
+            //if (!DA.GetDataList("Targets", targets)) {
+            //    return;
+            //}
+
+            if (!DA.GetData("Mod file", ref path)) {
                 return;
             }
 
             DA.GetData("Run", ref run);
             
             if (run) {
+                List<string> targets = ReadModFile(path);
                 Socket client = SocketConnection(ip, port);
                 SendTargets(client, targets);
                 CloseConnection(client);
             }
         }
 
+        /// <summary>
+        /// Shuts down and closes the socket
+        /// </summary>
+        /// <param name="client">The socket the close down</param>
 		private void CloseConnection(Socket client)
 		{
             client.Shutdown(SocketShutdown.Both);
             client.Close();
         }
 
+        /// <summary>
+        /// Makes a socket connection with a server and syncs with it
+        /// </summary>
+        /// <param name="ip">Server to connect to</param>
+        /// <param name="port">port of the socket connection</param>
+        /// <returns>The socket object</returns>
 		private Socket SocketConnection(string ip, int port) {        
             IPHostEntry ipHostInfo = Dns.GetHostEntry(ip);
             IPAddress ipAddress = ipHostInfo.AddressList[0];
@@ -105,6 +123,11 @@ namespace CSVModule.Network
             return client;
         }
 
+        /// <summary>
+        /// The targets to send to the server
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="targets"></param>
         private void SendTargets(Socket client, List<string> targets) {
 			for (int i = 0; i < targets.Count; i++)
 			{
@@ -115,7 +138,6 @@ namespace CSVModule.Network
                     client.Send(payload);
                     System.Threading.Thread.Sleep(500);
                 }
-
 
                 //Reply from server
                 byte[] bytes = new byte[1024];
@@ -197,19 +219,22 @@ namespace CSVModule.Network
             return RAPID.Substring(openBracket, closeBracket - openBracket);
         }
 
+        private List<string> ReadModFile(string path) {
+            string[] lines = System.IO.File.ReadAllLines(path);
+            List<string> targets = new List<string>();
+            foreach (var line in lines) {
+                if (line.Contains("MoveL") || line.Contains("MoveAbsJ")) { 
+                    targets.Add(line);
+                }
+            }
+            return targets;
+        }
+
 
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
-                //You can add image files to your project resources and access them like this:
-                // return Resources.IconForThisComponent;
-                return null;
-            }
-        }
+        protected override System.Drawing.Bitmap Icon => Resources.datawoodsocket.ToBitmap();
 
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.

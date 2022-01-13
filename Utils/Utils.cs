@@ -15,7 +15,7 @@ namespace DatawoodGH.Utils
         /// <param name="s">String to check in</param>
         /// <param name="t">Char to look for</param>
         /// <param name="n">Count of given char to return</param>
-        /// <returns></returns>
+        /// <returns>The index of the char</returns>
 		public static int GetNthIndex(string s, char t, int n) {
             int count = 0;
             for (int i = 0; i < s.Length; i++)
