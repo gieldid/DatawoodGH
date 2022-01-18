@@ -101,10 +101,8 @@ namespace CSVModule.Network
         /// <param name="port">port of the socket connection</param>
         /// <returns>The socket object</returns>
 		private Socket SocketConnection(string ip, int port) {        
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(ip);
-            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            IPAddress ipAddress = IPAddress.Parse(ip);
             IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-
             Socket client = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
             client.Connect(remoteEP);
