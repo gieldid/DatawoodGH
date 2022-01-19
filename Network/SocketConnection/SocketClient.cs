@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using DatawoodGH.Network;
+﻿using DatawoodGH.Properties;
 using Grasshopper.Kernel;
-using Rhino.Geometry;
-using System.Net.Sockets;
+using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
-using DatawoodGH.Utility;
-using DatawoodGH.Properties;
 
 namespace DatawoodGH.Network.SocketConnection
 {
