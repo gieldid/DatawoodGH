@@ -9,7 +9,7 @@ namespace DatawoodGH.Network.SocketConnection
         }
         public override void SendOverSocket(Socket client)
         {
-            SendOverSocketCommandBase(client);
+            SendOverSocketCommandBase(client, 1500);
         }
     }
 }

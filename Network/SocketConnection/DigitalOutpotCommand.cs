@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using System.Text;
 
 namespace DatawoodGH.Network.SocketConnection
 {
@@ -23,6 +24,13 @@ namespace DatawoodGH.Network.SocketConnection
         public override void SendOverSocket(Socket client)
         {
             SendOverSocketCommandBase(client);
+            byte[] payload = Encoding.UTF8.GetBytes(ValveName);
+            client.Send(payload);
+            System.Threading.Thread.Sleep(500);
+
+            payload = Encoding.UTF8.GetBytes(DioNum);
+            client.Send(payload);
+            System.Threading.Thread.Sleep(500);
         }
     }
 }

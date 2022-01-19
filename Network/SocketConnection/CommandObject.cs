@@ -13,10 +13,12 @@ namespace DatawoodGH.Network.SocketConnection
 
         public abstract void SendOverSocket(Socket client);
 
-        protected void SendOverSocketCommandBase(Socket client) {
+        protected void SendOverSocketCommandBase(Socket client, int waitTime = 500) {
             byte[] payload = Encoding.UTF8.GetBytes(Name);
             client.Send(payload);
-            System.Threading.Thread.Sleep(500);
+            System.Threading.Thread.Sleep(waitTime);
         }
+
+        
     }
 }
