@@ -6,7 +6,7 @@ using DatawoodGH.Properties;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 
-namespace CSVModule
+namespace DatawoodGH.Network
 {
     public class ApiCall : NetworkComponent
     {

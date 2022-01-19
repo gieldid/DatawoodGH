@@ -3,7 +3,7 @@ using System.Globalization;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 
-namespace csvModule
+namespace DatawoodGH
 {
 	public class DataWoodObject
 	{	

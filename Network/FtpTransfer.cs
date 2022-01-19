@@ -8,7 +8,7 @@ using Grasshopper.Kernel;
 using Renci.SshNet;
 using Rhino.Geometry;
 
-namespace CSVModule
+namespace DatawoodGH.Network
 {
     public class FtpTransfer : NetworkComponent
     {

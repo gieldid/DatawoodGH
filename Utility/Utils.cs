@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DatawoodGH.Utils
+namespace DatawoodGH.Utility
 {
 	public static class Utils
 	{

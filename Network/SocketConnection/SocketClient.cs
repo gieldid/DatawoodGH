@@ -6,10 +6,10 @@ using Rhino.Geometry;
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
-using DatawoodGH.Utils;
+using DatawoodGH.Utility;
 using DatawoodGH.Properties;
 
-namespace CSVModule.Network
+namespace DatawoodGH.Network.SocketConnection
 {
     public class SocketClient : NetworkComponent
     {
@@ -77,9 +77,9 @@ namespace CSVModule.Network
             DA.GetData("Run", ref run);
             
             if (run) {
-                List<string> targets = ReadModFile(path);
+                ModFileObject mod = new ModFileObject(path);
                 Socket client = SocketConnection(ip, port);
-                SendTargets(client, targets);
+                SendTargets(client, mod.MovesFull);
                 CloseConnection(client);
             }
         }
@@ -190,7 +190,7 @@ namespace CSVModule.Network
             {
                 if (value.Contains("Speed"))
                 {
-                    speed = value;
+                    speed = value; 
                 }
             }
             return speed;
@@ -220,11 +220,13 @@ namespace CSVModule.Network
         private List<string> ReadModFile(string path) {
             string[] lines = System.IO.File.ReadAllLines(path);
             List<string> targets = new List<string>();
+            Dictionary<string,string> speeds = new Dictionary<string,string>();
             foreach (var line in lines) {
                 if (line.Contains("MoveL") || line.Contains("MoveAbsJ")) { 
                     targets.Add(line);
                 }
             }
+
             return targets;
         }
 

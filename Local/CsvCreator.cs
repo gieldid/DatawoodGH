@@ -7,7 +7,7 @@ using System;
 using System.Globalization;
 using System.IO;
 
-namespace csvModule
+namespace DatawoodGH
 {
 	public class CsvCreator : LocalComponent
 	{

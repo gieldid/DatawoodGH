@@ -3,7 +3,7 @@ using Grasshopper.Kernel;
 using System;
 using System.Drawing;
 
-namespace csvModule
+namespace DatawoodGH
 {
 	public class DatawoodInfo : GH_AssemblyInfo
 	{
