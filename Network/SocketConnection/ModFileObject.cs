@@ -1,9 +1,5 @@
-﻿using System;
+﻿using DatawoodGH.Utility;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DatawoodGH.Utility;
 
 namespace DatawoodGH.Network.SocketConnection
 {
@@ -11,10 +7,12 @@ namespace DatawoodGH.Network.SocketConnection
     {
         private const string MOVE_L = "MoveL";
         private const string MOVE_ABSJ = "MoveAbsJ";
+        private const string SET_DO = "SetDO";
+        private const string WAIT_TIME = "WaitTime";
 
         public Dictionary<string, string> Speeds { get; private set; }
         public Dictionary<string, string> Zones { get; private set; }
-        public List<MoveObject> Moves { get; set; } 
+        public List<CommandObject> Commands { get; set; } 
 
         /// <summary>
         /// Reads the modfile and puts the Moves, speeds and zones in their respective variables.
@@ -23,29 +21,40 @@ namespace DatawoodGH.Network.SocketConnection
         public ModFileObject(string path) {
             Speeds = new Dictionary<string, string>();
             Zones = new Dictionary<string, string>();
-            Moves = new List<MoveObject>();
+            Commands = new List<CommandObject>();
             ReadModFile(path);
         }
 
         private void ReadModFile(string path) {
             string[] lines = System.IO.File.ReadAllLines(path);
+
             foreach (var line in lines)
             {
-                ReadMoves(line);
+                ReadCommands(line);
                 ReadSpeeds(line);
                 ReadZones(line);
             }
         }
 
-        private void ReadMoves(string line) {
+        private void ReadCommands(string line) {
             if (line.Contains(MOVE_L))
             {
                 MoveLObject moveL = new MoveLObject(line, Speeds, Zones);
-                Moves.Add(moveL);
+                Commands.Add(moveL);
             }
-            else if (line.Contains(MOVE_ABSJ)) {
+            else if (line.Contains(MOVE_ABSJ))
+            {
                 MoveAbsJObject moveAbjs = new MoveAbsJObject(line, Speeds, Zones);
-                Moves.Add(moveAbjs);
+                Commands.Add(moveAbjs);
+            }
+            else if (line.Contains(SET_DO))
+            {
+                DigitalOutpotCommand digitalOutpotCommand = new DigitalOutpotCommand(line);
+                Commands.Add(digitalOutpotCommand);
+            }
+            else if (line.Contains(WAIT_TIME)) { 
+                WaitCommand waitCommand = new WaitCommand();
+                Commands.Add(waitCommand);
             }
         }
 

@@ -36,7 +36,7 @@ namespace DatawoodGH.Network.SocketConnection
 
         public override void SendOverSocket(Socket client)
         {
-            SendOverSocketBase(client);
+            SendOverSocketMoveBase(client);
             byte[] payload = Encoding.UTF8.GetBytes(Pos);
             client.Send(payload);
             System.Threading.Thread.Sleep(500);

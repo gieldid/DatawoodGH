@@ -76,7 +76,7 @@ namespace DatawoodGH.Network.SocketConnection
             if (run) {
                 ModFileObject mod = new ModFileObject(path);
                 Socket client = SocketConnection(ip, port);
-                SendMoves(client, mod.Moves);
+                SendCommands(client, mod.Commands);
                 CloseConnection(client);
             }
         }
@@ -123,10 +123,10 @@ namespace DatawoodGH.Network.SocketConnection
         /// </summary>
         /// <param name="client"></param>
         /// <param name="targets"></param>
-        private void SendMoves(Socket client, List<MoveObject> moves) {
-			for (int i = 0; i < moves.Count; i++)
-			{           
-                moves[i].SendOverSocket(client);
+        private void SendCommands(Socket client, List<CommandObject> commands) {
+			for (int i = 0; i < commands.Count; i++)
+			{
+                commands[i].SendOverSocket(client);
                 //Reply from server
                 byte[] bytes = new byte[1024];
                 int bytesRec = client.Receive(bytes);
@@ -136,7 +136,7 @@ namespace DatawoodGH.Network.SocketConnection
                 }
 
                 byte[] end_payload;
-                if (i == moves.Count -1)
+                if (i == commands.Count -1)
                 {
                      end_payload = Encoding.UTF8.GetBytes("No more targets");
                 }

@@ -4,14 +4,13 @@ using System.Text;
 
 namespace DatawoodGH.Network.SocketConnection
 {
-    public abstract class MoveObject
+    public abstract class MoveObject : CommandObject
     {
-        public string Name { get; set; }    
         public string Speed { get; set; }
         public string Zone { get; set; }
         public string ExternalJoint { get; set; }
 
-        public MoveObject(string line, Dictionary<string , string> speeds, Dictionary<string, string> zones) {
+        public MoveObject(string line, Dictionary<string , string> speeds, Dictionary<string, string> zones){
             ReadExternalJoint(line);
             ReadSpeed(line, speeds);
             ReadZone(line, zones);
@@ -54,15 +53,9 @@ namespace DatawoodGH.Network.SocketConnection
 
             Zone = zoneValue;
         }
-
-        public abstract void SendOverSocket(Socket client);
-
-        protected void SendOverSocketBase(Socket client) {
-            byte[] payload = Encoding.UTF8.GetBytes(Name);
-            client.Send(payload);
-            System.Threading.Thread.Sleep(500);
-
-            payload = Encoding.UTF8.GetBytes(Speed);
+        protected void SendOverSocketMoveBase(Socket client) {
+            SendOverSocketCommandBase(client);
+            byte[] payload = Encoding.UTF8.GetBytes(Speed);
             client.Send(payload);
             System.Threading.Thread.Sleep(500);
 
