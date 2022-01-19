@@ -12,7 +12,6 @@
     VAR string recv_next_target;
     VAR string recv_valve;
     VAR string recv_valve_val;
-    VAR string recv_next_target;
     VAR pos to_point_pos;
     VAR orient to_point_orient;
     VAR extjoint ext_joint;
