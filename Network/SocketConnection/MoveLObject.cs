@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using DatawoodGH.Utility;
@@ -14,6 +15,7 @@ namespace DatawoodGH.Network.SocketConnection
 
         public MoveLObject(string line, Dictionary<string, string> speeds, Dictionary<string, string> zones) : base(line, speeds, zones)
         {
+            Name = "MoveL";
             ReadPos(line);
             ReadOrient(line);
         }
@@ -30,6 +32,18 @@ namespace DatawoodGH.Network.SocketConnection
             int closeBracket = Utils.GetNthIndex(line, ']', 2) + 1;
 
             Orient = line.Substring(openBracket, closeBracket - openBracket);
+        }
+
+        public override void SendOverSocket(Socket client)
+        {
+            SendOverSocketBase(client);
+            byte[] payload = Encoding.UTF8.GetBytes(Pos);
+            client.Send(payload);
+            System.Threading.Thread.Sleep(500);
+
+            payload = Encoding.UTF8.GetBytes(Orient);
+            client.Send(payload);
+            System.Threading.Thread.Sleep(500);
         }
 
     }

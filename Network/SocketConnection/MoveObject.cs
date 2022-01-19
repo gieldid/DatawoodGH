@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Text;
 
 namespace DatawoodGH.Network.SocketConnection
 {
     public abstract class MoveObject
     {
-
-
         public string Name { get; set; }    
         public string Speed { get; set; }
         public string Zone { get; set; }
@@ -53,6 +53,26 @@ namespace DatawoodGH.Network.SocketConnection
             zones.TryGetValue(zoneKey, out string zoneValue);
 
             Zone = zoneValue;
+        }
+
+        public abstract void SendOverSocket(Socket client);
+
+        protected void SendOverSocketBase(Socket client) {
+            byte[] payload = Encoding.UTF8.GetBytes(Name);
+            client.Send(payload);
+            System.Threading.Thread.Sleep(500);
+
+            payload = Encoding.UTF8.GetBytes(Speed);
+            client.Send(payload);
+            System.Threading.Thread.Sleep(500);
+
+            payload = Encoding.UTF8.GetBytes(Zone);
+            client.Send(payload);
+            System.Threading.Thread.Sleep(500);
+
+            payload = Encoding.UTF8.GetBytes(ExternalJoint);
+            client.Send(payload);
+            System.Threading.Thread.Sleep(500);
         }
     }
 }

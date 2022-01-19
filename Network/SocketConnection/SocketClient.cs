@@ -13,9 +13,6 @@ namespace DatawoodGH.Network.SocketConnection
 {
     public class SocketClient : NetworkComponent
     {
-        private const string MOVE_L = "MoveL";
-        private const string MOVE_ABSJ = "MoveAbsJ";
-
         /// <summary>
         /// Initializes a new instance of the WebSocketComponent class.
         /// </summary>
@@ -79,7 +76,7 @@ namespace DatawoodGH.Network.SocketConnection
             if (run) {
                 ModFileObject mod = new ModFileObject(path);
                 Socket client = SocketConnection(ip, port);
-                SendTargets(client, mod.MovesFull);
+                SendMoves(client, mod.Moves);
                 CloseConnection(client);
             }
         }
@@ -126,17 +123,10 @@ namespace DatawoodGH.Network.SocketConnection
         /// </summary>
         /// <param name="client"></param>
         /// <param name="targets"></param>
-        private void SendTargets(Socket client, List<string> targets) {
-			for (int i = 0; i < targets.Count; i++)
-			{
-                List<string> messages = RAPIDToTargets(targets[i]);
-
-                foreach(var message in messages) {
-                    byte[] payload = Encoding.UTF8.GetBytes(message);
-                    client.Send(payload);
-                    System.Threading.Thread.Sleep(500);
-                }
-
+        private void SendMoves(Socket client, List<MoveObject> moves) {
+			for (int i = 0; i < moves.Count; i++)
+			{           
+                moves[i].SendOverSocket(client);
                 //Reply from server
                 byte[] bytes = new byte[1024];
                 int bytesRec = client.Receive(bytes);
@@ -146,7 +136,7 @@ namespace DatawoodGH.Network.SocketConnection
                 }
 
                 byte[] end_payload;
-                if (i == targets.Count -1)
+                if (i == moves.Count -1)
                 {
                      end_payload = Encoding.UTF8.GetBytes("No more targets");
                 }
@@ -157,79 +147,6 @@ namespace DatawoodGH.Network.SocketConnection
             }
 
 		}
-
-        /// <summary>
-        /// Splits the received RAPID string into following targets
-        /// 1 Type of move
-        /// 2 robjoint
-        /// 3 Speed
-        /// </summary>
-        /// <param name="RAPID"></param>
-        /// <returns></returns>
-        private List<string> RAPIDToTargets(string RAPID) {
-            List<string> targets = new List<string>();
-            targets.Add(GetSpeed(RAPID));
-            targets.Add(GetExtJoint(RAPID));
-            targets.Add(GetPosOrRobJoint(RAPID));
-
-
-            if (RAPID.Contains(MOVE_L)) {
-                targets.Insert(0, MOVE_L);
-                targets.Add(GetOrient(RAPID));
-            } else if (RAPID.Contains(MOVE_ABSJ)) {
-                targets.Insert(0,MOVE_ABSJ);
-            }
-            
-            return targets;
-        }
-
-        private string GetSpeed(string RAPID) {
-            string[] values = RAPID.Split(',');
-            string speed = null;
-            foreach (var value in values)
-            {
-                if (value.Contains("Speed"))
-                {
-                    speed = value; 
-                }
-            }
-            return speed;
-        }
-
-        private string GetPosOrRobJoint(string RAPID) {
-            int openBracket = Utils.GetNthIndex(RAPID, '[', 2) ;
-            int closeBracket = RAPID.IndexOf(']') + 1;
-
-            return RAPID.Substring(openBracket, closeBracket - openBracket);
-        }
-
-        private string GetOrient(string RAPID) {
-            int openBracket = Utils.GetNthIndex(RAPID, '[', 3);
-            int closeBracket = Utils.GetNthIndex(RAPID, ']', 2) + 1;
-
-            return RAPID.Substring(openBracket, closeBracket - openBracket);
-        }
-
-        private string GetExtJoint(string RAPID) {
-            int openBracket = RAPID.LastIndexOf('[');
-            int closeBracket = RAPID.LastIndexOf(']');
-
-            return RAPID.Substring(openBracket, closeBracket - openBracket);
-        }
-
-        private List<string> ReadModFile(string path) {
-            string[] lines = System.IO.File.ReadAllLines(path);
-            List<string> targets = new List<string>();
-            Dictionary<string,string> speeds = new Dictionary<string,string>();
-            foreach (var line in lines) {
-                if (line.Contains("MoveL") || line.Contains("MoveAbsJ")) { 
-                    targets.Add(line);
-                }
-            }
-
-            return targets;
-        }
-
 
         /// <summary>
         /// Provides an Icon for the component.

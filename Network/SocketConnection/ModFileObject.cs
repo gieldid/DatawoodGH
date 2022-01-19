@@ -9,19 +9,21 @@ namespace DatawoodGH.Network.SocketConnection
 {
     public class ModFileObject
     {
-        public List<string> MovesFull {  get; private set; }
+        private const string MOVE_L = "MoveL";
+        private const string MOVE_ABSJ = "MoveAbsJ";
+
         public Dictionary<string, string> Speeds { get; private set; }
         public Dictionary<string, string> Zones { get; private set; }
-        public List<MoveObject> Voves { get; set; } 
+        public List<MoveObject> Moves { get; set; } 
 
         /// <summary>
         /// Reads the modfile and puts the Moves, speeds and zones in their respective variables.
         /// </summary>
         /// <param name="path">path of the modfile</param>
         public ModFileObject(string path) {
-            MovesFull = new List<string>();
             Speeds = new Dictionary<string, string>();
             Zones = new Dictionary<string, string>();
+            Moves = new List<MoveObject>();
             ReadModFile(path);
         }
 
@@ -36,9 +38,14 @@ namespace DatawoodGH.Network.SocketConnection
         }
 
         private void ReadMoves(string line) {
-            if (line.Contains("MoveL") || line.Contains("MoveAbsJ"))
+            if (line.Contains(MOVE_L))
             {
-                MovesFull.Add(line);
+                MoveLObject moveL = new MoveLObject(line, Speeds, Zones);
+                Moves.Add(moveL);
+            }
+            else if (line.Contains(MOVE_ABSJ)) {
+                MoveAbsJObject moveAbjs = new MoveAbsJObject(line, Speeds, Zones);
+                Moves.Add(moveAbjs);
             }
         }
 
@@ -69,7 +76,7 @@ namespace DatawoodGH.Network.SocketConnection
 
                 var zoneData = line.Substring(startData, endData - startData);
 
-                Speeds.Add(zoneName, zoneData);
+                Zones.Add(zoneName, zoneData);
             }
         }
     }
