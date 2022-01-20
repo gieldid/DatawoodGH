@@ -37,7 +37,7 @@ namespace DatawoodGH.Network.SocketConnection
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddTextParameter("Message","m","Message received",GH_ParamAccess.item);
+            pManager.AddBooleanParameter("Finished","f","finished",GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -71,10 +71,12 @@ namespace DatawoodGH.Network.SocketConnection
             DA.GetData("Run", ref run);
             
             if (run) {
+                DA.SetData("Finished", false);
                 ModFileObject mod = new ModFileObject(path);
                 Socket client = SocketConnection(ip, port);
                 SendCommands(client, mod.Commands);
                 CloseConnection(client);
+                DA.SetData("Finished", true);
             }
         }
 
@@ -115,6 +117,8 @@ namespace DatawoodGH.Network.SocketConnection
             return client;
         }
 
+
+
         /// <summary>
         /// The targets to send to the server
         /// </summary>
@@ -128,7 +132,7 @@ namespace DatawoodGH.Network.SocketConnection
                 byte[] bytes = new byte[1024];
                 int bytesRec = client.Receive(bytes);
                 string answer = Encoding.UTF8.GetString(bytes, 0, bytesRec);
-                if (answer != "ready") { 
+                if (answer != "Ready") { 
                     return; 
                 }
 
