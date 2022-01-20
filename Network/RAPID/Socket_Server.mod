@@ -57,7 +57,7 @@
                         WaitCommand;
                     ENDIF
 
-                    SocketSend client_socket \Str:="ready";
+                    SocketSend client_socket \Str:="Ready";
                     SocketReceive client_socket \Str:=recv_next_target \Time:=WAIT_MAX;
                     IF recv_next_target = "No more targets" THEN
                         keep_receiving_targets:= FALSE;
@@ -90,7 +90,7 @@
             SocketReceive client_socket \Str:=recv_orient \Time:=WAIT_MAX;
             filler_bool:=StrToVal(recv_pos_robjoint, to_point_pos);
             filler_bool:= StrToVal(recv_orient, to_point_orient);
-            !MoveL [to_point_pos,to_point_orient,conf,ext_joint],current_speed,current_zone,Ad_Gripper_2 \WObj:=DefaultFrame;    
+            MoveL [to_point_pos,to_point_orient,conf,ext_joint],current_speed,current_zone,Ad_Gripper_2 \WObj:=DefaultFrame;    
         ELSEIF recv_method = "MoveAbsJ" THEN
             filler_bool:= StrToVal(recv_pos_robjoint, to_rob_joint);
             MoveAbsJ [to_rob_joint,ext_joint],current_speed,current_zone,Ad_Gripper_2;
@@ -122,8 +122,6 @@
 			SocketSend client_socket \Str:="ok";
 			RETURN "stop";
 		ELSE
-            !switching protocols
-
 			RETURN "unexpect str:";
 		ENDIF
 	ENDFUNC    
