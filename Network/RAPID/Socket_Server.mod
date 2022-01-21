@@ -38,7 +38,7 @@
     PROC main()
         ConfL \Off;
         SocketCreate server_socket;
-        SocketBind server_socket, "127.0.0.1", 1025;
+        SocketBind server_socket, "10.0.0.13", 1025;
 		SocketListen server_socket;
 	
         WHILE TRUE DO
@@ -102,9 +102,14 @@
         SocketReceive client_socket \Str:=recv_valve \Time:=WAIT_MAX;
         SocketReceive client_socket \Str:=recv_valve_val \Time:=WAIT_MAX;
         
-        filler_bool:=StrToVal(recv_valve, current_valve);
+        !filler_bool:=StrToVal(recv_valve, current_valve);
         filler_bool:=StrToVal(recv_valve_val, current_valve_val);
-        SetDO \Sync, current_valve, current_valve_val;
+
+        IF recv_valve = "EX600_VALVE_0" THEN
+            SetDO \Sync, EX600_VALVE_0, current_valve_val;
+        ELSEIF recv_valve = "EX600_VALVE_1" THEN
+            SetDO \Sync, EX600_VALVE_1, current_valve_val;
+        ENDIF
     ENDPROC
     
     PROC WaitCommand()
