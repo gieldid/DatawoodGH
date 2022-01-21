@@ -4,6 +4,7 @@ using DatawoodGH.Local;
 using DatawoodGH.Properties;
 using Grasshopper.Kernel;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
@@ -13,7 +14,7 @@ namespace DatawoodGH
 	{
 
 		private static readonly string CSV_NAME = "Datawood.csv";
-
+		private static DataWoodObject LastDataWoodObject = null;
 		/// <summary>
 		/// Each implementation of GH_Component must provide a public 
 		/// constructor without any arguments.
@@ -169,27 +170,38 @@ namespace DatawoodGH
 					PicturePath = picturePath,
 					Location = location
 				};
-				var result = WriteTOCSV(datawood, path, name, delimiter);
-				DA.SetData(0, result);
-			}
-			else {
-				return;
+				var fullPath = CreateFullPath(path, name);
+				DA.SetData(0, fullPath);
+
+				if (!(LastDataWoodObject is null))
+				{
+					if (LastDataWoodObject.Equals(datawood))
+					{
+						return;
+					}
+				}
+				
+				WriteToCsv(datawood, fullPath, delimiter);
+				LastDataWoodObject = datawood;
+				
 			}
 		}
 
+
+		private string CreateFullPath(string path, string name) {
+			string[] paths = { path, name };
+			string fullPath = Path.Combine(paths);
+			return fullPath;
+		}
 
 		/// <summary>
 		/// Creates a new csv file or appends to it
 		/// </summary>
 		/// <param name="datawood">The object that should be written to the csv</param>
-		/// <param name="path">dir path</param>
-		/// <param name="name">file name</param>
+		/// <param name="fullPath">dir path + file name</param>
 		/// <param name="delimiter">Delimter used in the csv</param>
 		/// <returns></returns>
-		private string WriteTOCSV(DataWoodObject datawood, string path, string name, string delimiter) {
-			string[] paths = { path, name };
-			string fullPath = Path.Combine(paths);
-
+		private void WriteToCsv(DataWoodObject datawood, string fullPath, string delimiter) {
 			var config = new CsvConfiguration(CultureInfo.InvariantCulture)
 			{
 				Delimiter = delimiter
@@ -220,9 +232,7 @@ namespace DatawoodGH
 
 			}
 
-			return fullPath;
 		}
-
 
 		/// <summary>
 		/// Provides an Icon for every component that will be visible in the User Interface.
