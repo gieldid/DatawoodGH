@@ -145,6 +145,7 @@ namespace DatawoodGH.Network.SocketConnection
                     end_payload = Encoding.UTF8.GetBytes("Sending next target");
                 }
                 client.Send(end_payload);
+                System.Threading.Thread.Sleep(500);
             }
 
 		}

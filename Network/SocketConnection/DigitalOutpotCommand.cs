@@ -19,7 +19,8 @@ namespace DatawoodGH.Network.SocketConnection
 
         private void ReadDioNum(string line) {
             var splitLine = line.Split(',');
-            DioNum = splitLine[2];
+            var dioNum = splitLine[2].Trim(new char[]{';'});
+            DioNum = dioNum;
         }
         public override void SendOverSocket(Socket client)
         {

@@ -32,13 +32,13 @@
     
     VAR speeddata current_speed;
     VAR zonedata current_zone;
-    VAR dionum current_valve_val;
+    VAR intnum current_valve_val;
     VAR signaldo current_valve;
 
     PROC main()
         ConfL \Off;
         SocketCreate server_socket;
-        SocketBind server_socket, "10.0.0.13", 1025;
+        SocketBind server_socket, "127.0.0.1", 1025;
 		SocketListen server_socket;
 	
         WHILE TRUE DO
@@ -90,7 +90,7 @@
             SocketReceive client_socket \Str:=recv_orient \Time:=WAIT_MAX;
             filler_bool:=StrToVal(recv_pos_robjoint, to_point_pos);
             filler_bool:= StrToVal(recv_orient, to_point_orient);
-            MoveL [to_point_pos,to_point_orient,conf,ext_joint],current_speed,current_zone,Ad_Gripper_2 \WObj:=DefaultFrame;    
+            !MoveL [to_point_pos,to_point_orient,conf,ext_joint],current_speed,current_zone,Ad_Gripper_2 \WObj:=DefaultFrame;    
         ELSEIF recv_method = "MoveAbsJ" THEN
             filler_bool:= StrToVal(recv_pos_robjoint, to_rob_joint);
             MoveAbsJ [to_rob_joint,ext_joint],current_speed,current_zone,Ad_Gripper_2;
@@ -106,9 +106,9 @@
         filler_bool:=StrToVal(recv_valve_val, current_valve_val);
 
         IF recv_valve = "EX600_VALVE_0" THEN
-            SetDO \Sync, EX600_VALVE_0, current_valve_val;
+            !SetDO \Sync, EX600_VALVE_0, current_valve_val;
         ELSEIF recv_valve = "EX600_VALVE_1" THEN
-            SetDO \Sync, EX600_VALVE_1, current_valve_val;
+            !SetDO \Sync, EX600_VALVE_1, current_valve_val;
         ENDIF
     ENDPROC
     
