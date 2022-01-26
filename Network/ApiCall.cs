@@ -23,22 +23,24 @@ namespace DatawoodGH.Network
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddTextParameter("URL", "U", "Url of api to call", GH_ParamAccess.item);
-            pManager.AddBooleanParameter("Enabled", "E", "Makes API call when enabled", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("Run", "R", "Runs component", GH_ParamAccess.item);
         }
 
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddTextParameter("JSON", "J", "The JSON Output", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("Finished", "F", "Finished it's call", GH_ParamAccess.item);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             string url = null;
             string result = null;
-            bool enabled = false;
-            if (!DA.GetData(0, ref url)) return;
-            if (!DA.GetData(1, ref enabled)) return;
-
+            bool enabled = false; 
+            DA.SetData("Finished", false);
+            if (!DA.GetData("URL", ref url)) return;
+            if (!DA.GetData("Run", ref enabled)) return;
+            
             if (enabled) {
                 try
                 {
@@ -47,7 +49,8 @@ namespace DatawoodGH.Network
                         result = wc.DownloadString(url);
                     }
 
-                    DA.SetData(0, result);
+                    DA.SetData("JSON", result);
+                    DA.SetData("Finished", true);
                 }
                 catch (WebException webex) {
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Error, webex.Message);

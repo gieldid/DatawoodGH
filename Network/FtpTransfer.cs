@@ -35,7 +35,7 @@ namespace DatawoodGH.Network
             pManager.AddTextParameter("Path server", "PS", "Path of file on server", GH_ParamAccess.item);
             pManager.AddTextParameter("Path client", "PC", "Path to transfer file to on client", GH_ParamAccess.item);
 
-            pManager.AddBooleanParameter("Enabled", "E", "Transfers file when enabled", GH_ParamAccess.item, false);
+            pManager.AddBooleanParameter("Run", "R", "Runs component", GH_ParamAccess.item, false);
         }
 
         /// <summary>
@@ -44,6 +44,7 @@ namespace DatawoodGH.Network
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
             pManager.AddTextParameter("Path", "P", "File path", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("Finished", "F", "Finished task", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -58,7 +59,7 @@ namespace DatawoodGH.Network
             string pathServer = null;
             string pathClient = null;
             bool enabled = false;
-
+            DA.SetData("Finished",false);
             if (!DA.GetData(0, ref host))
             {
                 return;
@@ -79,14 +80,15 @@ namespace DatawoodGH.Network
             {
                 return;
             }
-            DA.GetData(5, ref enabled);
+            DA.GetData("Run", ref enabled);
 
             if (enabled)
             {
 
                 string path = DownloadFile(host, user, password, pathServer, pathClient);
 
-                DA.SetData(0, path);
+                DA.SetData("Path", path);
+                DA.SetData("Finished", true);
             }
         }
 
