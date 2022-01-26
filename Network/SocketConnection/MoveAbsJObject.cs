@@ -24,11 +24,11 @@ namespace DatawoodGH.Network.SocketConnection
             RobJoint = line.Substring(openBracket, closeBracket - openBracket);
         }
 
-        public override void SendOverSocket(Socket client){
-            SendOverSocketMoveBase(client);
+        public override async Task SendOverSocket(Socket client){
+            await SendOverSocketMoveBase(client);
             byte[] payload = Encoding.UTF8.GetBytes(RobJoint);
             client.Send(payload);
-            System.Threading.Thread.Sleep(500);
+            await Task.Delay(500);
         }
         
     }

@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DatawoodGH.Network.SocketConnection
 {
@@ -22,16 +23,16 @@ namespace DatawoodGH.Network.SocketConnection
             var dioNum = splitLine[2].Trim(new char[]{';'});
             DioNum = dioNum;
         }
-        public override void SendOverSocket(Socket client)
+        public override async Task SendOverSocket(Socket client)
         {
-            SendOverSocketCommandBase(client);
+            await SendOverSocketCommandBase(client);
             byte[] payload = Encoding.UTF8.GetBytes(ValveName);
             client.Send(payload);
-            System.Threading.Thread.Sleep(500);
+            Task.Delay(500).Wait();
 
             payload = Encoding.UTF8.GetBytes(DioNum);
             client.Send(payload);
-            System.Threading.Thread.Sleep(500);
+            Task.Delay(500).Wait();
         }
     }
 }

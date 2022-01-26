@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DatawoodGH.Network.SocketConnection
 {
@@ -44,7 +45,7 @@ namespace DatawoodGH.Network.SocketConnection
         /// This is the method that actually does the work.
         /// </summary>
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
-        protected override void SolveInstance(IGH_DataAccess DA)
+        protected override async void SolveInstance(IGH_DataAccess DA)
         {
             string ip = null;
             int port = 0;
@@ -73,7 +74,7 @@ namespace DatawoodGH.Network.SocketConnection
             if (run) {
                 ModFileObject mod = new ModFileObject(path);
                 Socket client = SocketConnection(ip, port);
-                SendCommands(client, mod.Commands);
+                await SendCommands(client, mod.Commands);
                 CloseConnection(client);
                 DA.SetData("Finished", true);
             }
@@ -99,7 +100,7 @@ namespace DatawoodGH.Network.SocketConnection
             IPAddress ipAddress = IPAddress.Parse(ip);
             IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
             Socket client = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
+            
             client.Connect(remoteEP);
             this.Message = "Socket connected to "+ client.RemoteEndPoint.ToString();
      
@@ -123,10 +124,11 @@ namespace DatawoodGH.Network.SocketConnection
         /// </summary>
         /// <param name="client"></param>
         /// <param name="targets"></param>
-        private void SendCommands(Socket client, List<CommandObject> commands) {
+        private async Task SendCommands(Socket client, List<CommandObject> commands) {
 			for (int i = 0; i < commands.Count; i++)
 			{
-                commands[i].SendOverSocket(client);
+                await commands[i].SendOverSocket(client);
+
                 //Reply from server
                 byte[] bytes = new byte[1024];
                 int bytesRec = client.Receive(bytes);
@@ -144,7 +146,7 @@ namespace DatawoodGH.Network.SocketConnection
                     end_payload = Encoding.UTF8.GetBytes("Sending next target");
                 }
                 client.Send(end_payload);
-                System.Threading.Thread.Sleep(500);
+                await Task.Delay(500);
             }
 
 		}

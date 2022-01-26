@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace DatawoodGH.Network.SocketConnection
 {
@@ -7,9 +8,9 @@ namespace DatawoodGH.Network.SocketConnection
         public WaitCommand() {
             Name = "Wait";
         }
-        public override void SendOverSocket(Socket client)
+        public override async Task SendOverSocket(Socket client)
         {
-            SendOverSocketCommandBase(client, 1500);
+            await SendOverSocketCommandBase(client, 1500);
         }
     }
 }

@@ -34,16 +34,16 @@ namespace DatawoodGH.Network.SocketConnection
             Orient = line.Substring(openBracket, closeBracket - openBracket);
         }
 
-        public override void SendOverSocket(Socket client)
+        public override async Task SendOverSocket(Socket client)
         {
-            SendOverSocketMoveBase(client);
+            await SendOverSocketMoveBase(client);
             byte[] payload = Encoding.UTF8.GetBytes(Pos);
             client.Send(payload);
-            System.Threading.Thread.Sleep(500);
+            await Task.Delay(500);
 
             payload = Encoding.UTF8.GetBytes(Orient);
             client.Send(payload);
-            System.Threading.Thread.Sleep(500);
+            await Task.Delay(500);
         }
 
     }

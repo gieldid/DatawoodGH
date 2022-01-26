@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DatawoodGH.Network.SocketConnection
 {
@@ -53,19 +54,19 @@ namespace DatawoodGH.Network.SocketConnection
 
             Zone = zoneValue;
         }
-        protected void SendOverSocketMoveBase(Socket client) {
-            SendOverSocketCommandBase(client);
+        protected async Task SendOverSocketMoveBase(Socket client) {
+            await SendOverSocketCommandBase(client);
             byte[] payload = Encoding.UTF8.GetBytes(Speed);
             client.Send(payload);
-            System.Threading.Thread.Sleep(500);
+            await Task.Delay(500);
 
             payload = Encoding.UTF8.GetBytes(Zone);
             client.Send(payload);
-            System.Threading.Thread.Sleep(500);
+            await Task.Delay(500);
 
             payload = Encoding.UTF8.GetBytes(ExternalJoint);
             client.Send(payload);
-            System.Threading.Thread.Sleep(500);
+            await Task.Delay(500);
         }
     }
 }
