@@ -28,11 +28,11 @@ namespace DatawoodGH.Network.SocketConnection
             await SendOverSocketCommandBase(client);
             byte[] payload = Encoding.UTF8.GetBytes(ValveName);
             client.Send(payload);
-            Task.Delay(500).Wait();
+            await Task.Delay(WaitTime);
 
             payload = Encoding.UTF8.GetBytes(DioNum);
             client.Send(payload);
-            Task.Delay(500).Wait();
+            await Task.Delay(WaitTime);
         }
     }
 }

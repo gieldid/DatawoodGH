@@ -58,15 +58,15 @@ namespace DatawoodGH.Network.SocketConnection
             await SendOverSocketCommandBase(client);
             byte[] payload = Encoding.UTF8.GetBytes(Speed);
             client.Send(payload);
-            await Task.Delay(500);
+            await Task.Delay(WaitTime);
 
             payload = Encoding.UTF8.GetBytes(Zone);
             client.Send(payload);
-            await Task.Delay(500);
+            await Task.Delay(WaitTime);
 
             payload = Encoding.UTF8.GetBytes(ExternalJoint);
             client.Send(payload);
-            await Task.Delay(500);
+            await Task.Delay(WaitTime);
         }
     }
 }

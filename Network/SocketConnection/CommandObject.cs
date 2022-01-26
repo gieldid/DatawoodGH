@@ -9,11 +9,12 @@ namespace DatawoodGH.Network.SocketConnection
 {
     public abstract class CommandObject
     {
+        public const int WaitTime = 500;
         public string Name { get; set; }
 
         public abstract Task SendOverSocket(Socket client);
 
-        protected async Task SendOverSocketCommandBase(Socket client, int waitTime = 500) {
+        protected async Task SendOverSocketCommandBase(Socket client, int waitTime = WaitTime) {
             byte[] payload = Encoding.UTF8.GetBytes(Name);
             client.Send(payload);
             await Task.Delay(waitTime);

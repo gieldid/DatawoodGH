@@ -28,7 +28,7 @@ namespace DatawoodGH.Network.SocketConnection
             await SendOverSocketMoveBase(client);
             byte[] payload = Encoding.UTF8.GetBytes(RobJoint);
             client.Send(payload);
-            await Task.Delay(500);
+            await Task.Delay(WaitTime);
         }
         
     }

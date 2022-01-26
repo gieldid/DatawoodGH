@@ -39,11 +39,11 @@ namespace DatawoodGH.Network.SocketConnection
             await SendOverSocketMoveBase(client);
             byte[] payload = Encoding.UTF8.GetBytes(Pos);
             client.Send(payload);
-            await Task.Delay(500);
+            await Task.Delay(WaitTime);
 
             payload = Encoding.UTF8.GetBytes(Orient);
             client.Send(payload);
-            await Task.Delay(500);
+            await Task.Delay(WaitTime);
         }
 
     }

@@ -1,5 +1,6 @@
 ﻿using DatawoodGH.Utility;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DatawoodGH.Network.SocketConnection
 {
@@ -12,6 +13,7 @@ namespace DatawoodGH.Network.SocketConnection
 
         public Dictionary<string, string> Speeds { get; private set; }
         public Dictionary<string, string> Zones { get; private set; }
+        public Dictionary<string, string> WaitTimes { get; private set; }
         public List<CommandObject> Commands { get; set; } 
 
         /// <summary>
@@ -21,6 +23,7 @@ namespace DatawoodGH.Network.SocketConnection
         public ModFileObject(string path) {
             Speeds = new Dictionary<string, string>();
             Zones = new Dictionary<string, string>();
+            WaitTimes = new Dictionary<string, string>();
             Commands = new List<CommandObject>();
             ReadModFile(path);
         }
@@ -33,6 +36,7 @@ namespace DatawoodGH.Network.SocketConnection
                 ReadCommands(line);
                 ReadSpeeds(line);
                 ReadZones(line);
+                ReadWaitTimes(line);
             }
         }
 
@@ -87,6 +91,23 @@ namespace DatawoodGH.Network.SocketConnection
 
                 Zones.Add(zoneName, zoneData);
             }
+        }
+
+        private void ReadWaitTimes(string line) {
+            if (line.Contains("PERS num Wait")) {
+                string waitValue = new string(line.SkipWhile(c => c != '=')
+                    .Skip(1)
+                    .TakeWhile(c => c != ';')
+                    .ToArray()).Trim();
+
+                var startName = line.IndexOf('W');
+                var endName = line.IndexOf(':');
+
+                string waitName = line.Substring(startName, endName - startName);
+
+                WaitTimes.Add(waitName, waitValue);
+            }
+
         }
     }
 }
