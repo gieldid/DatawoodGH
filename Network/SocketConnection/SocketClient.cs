@@ -69,9 +69,8 @@ namespace DatawoodGH.Network.SocketConnection
             }
 
             DA.GetData("Run", ref run);
-            
+            DA.SetData("Finished", false);
             if (run) {
-                DA.SetData("Finished", false);
                 ModFileObject mod = new ModFileObject(path);
                 Socket client = SocketConnection(ip, port);
                 SendCommands(client, mod.Commands);
