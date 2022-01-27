@@ -6,10 +6,10 @@ namespace DatawoodGH.Network.SocketConnection
 {
     public class ModFileObject
     {
-        private const string MOVE_L = "MoveL";
-        private const string MOVE_ABSJ = "MoveAbsJ";
-        private const string SET_DO = "SetDO";
-        private const string WAIT_TIME = "WaitTime";
+        private const string MoveL = "MoveL";
+        private const string MoveAbsJ = "MoveAbsJ";
+        private const string SetDo = "SetDO";
+        private const string WaitTime = "WaitTime";
 
         public Dictionary<string, string> Speeds { get; private set; }
         public Dictionary<string, string> Zones { get; private set; }
@@ -41,22 +41,22 @@ namespace DatawoodGH.Network.SocketConnection
         }
 
         private void ReadCommands(string line) {
-            if (line.Contains(MOVE_L))
+            if (line.Contains(MoveL))
             {
                 MoveLObject moveL = new MoveLObject(line, Speeds, Zones);
                 Commands.Add(moveL);
             }
-            else if (line.Contains(MOVE_ABSJ))
+            else if (line.Contains(MoveAbsJ))
             {
                 MoveAbsJObject moveAbjs = new MoveAbsJObject(line, Speeds, Zones);
                 Commands.Add(moveAbjs);
             }
-            else if (line.Contains(SET_DO))
+            else if (line.Contains(SetDo))
             {
                 DigitalOutpotCommand digitalOutpotCommand = new DigitalOutpotCommand(line);
                 Commands.Add(digitalOutpotCommand);
             }
-            else if (line.Contains(WAIT_TIME)) { 
+            else if (line.Contains(WaitTime)) { 
                 WaitCommand waitCommand = new WaitCommand(line, WaitTimes);
                 Commands.Add(waitCommand);
             }

@@ -13,7 +13,7 @@ namespace DatawoodGH
 	public class CsvCreator : LocalComponent
 	{
 
-		private static readonly string CSV_NAME = "Datawood.csv";
+		private const string CsvName = "Datawood.csv";
 		private static DataWoodObject LastDataWoodObject = null;
 		/// <summary>
 		/// Each implementation of GH_Component must provide a public 
@@ -48,7 +48,7 @@ namespace DatawoodGH
 			pManager.AddTextParameter("Picture Path", "PP", "Path to the picture of object", GH_ParamAccess.item);
 			pManager.AddTextParameter("Delimter", "D", "The delimter seperating values in the csv", GH_ParamAccess.item, ";");
 			pManager.AddBooleanParameter("Run", "R", "To run application", GH_ParamAccess.item, true);
-			pManager.AddTextParameter("Name", "N", "csv file name", GH_ParamAccess.item, CSV_NAME);
+			pManager.AddTextParameter("Name", "N", "csv file name", GH_ParamAccess.item, CsvName);
 			pManager.AddTextParameter("Location", "L", "Location where the object is physically stored", GH_ParamAccess.item);
 			//This is the Time parameter, if it's not set it will use DateTime.Now as default.
 			Params.Input[8].Optional = true;

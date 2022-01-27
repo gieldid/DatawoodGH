@@ -11,6 +11,7 @@ namespace DatawoodGH.Network.SocketConnection
 {
     public class SocketClient : NetworkComponent
     {
+        public const int TimeOut = 5000;
         /// <summary>
         /// Initializes a new instance of the WebSocketComponent class.
         /// </summary>
@@ -73,10 +74,16 @@ namespace DatawoodGH.Network.SocketConnection
             DA.SetData("Finished", false);
             if (run) {
                 ModFileObject mod = new ModFileObject(path);
-                Socket client = SocketConnection(ip, port);
-                await SendCommands(client, mod.Commands);
-                CloseConnection(client);
-                DA.SetData("Finished", true);
+                try
+                {
+                    Socket client = SocketConnection(ip, port);
+                    await SendCommands(client, mod.Commands);
+                    CloseConnection(client);
+                    DA.SetData("Finished", true);
+                }
+                catch (Exception ex) { 
+                    this.Message = ex.Message;   
+                }
             }
         }
 
@@ -100,8 +107,14 @@ namespace DatawoodGH.Network.SocketConnection
             IPAddress ipAddress = IPAddress.Parse(ip);
             IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
             Socket client = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            
-            client.Connect(remoteEP);
+            client.SendTimeout = TimeOut;
+            client.ReceiveTimeout = TimeOut;
+            Task result = client.ConnectAsync(remoteEP);
+            int index = Task.WaitAny(new[] { result }, TimeOut);
+            if (!client.Connected) { 
+                client.Close();
+                throw new Exception("Can't connect to server");
+            }
             this.Message = "Socket connected to "+ client.RemoteEndPoint.ToString();
      
             byte[] payload = Encoding.UTF8.GetBytes("listening?");
