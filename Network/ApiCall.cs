@@ -24,6 +24,7 @@ namespace DatawoodGH.Network
         {
             pManager.AddTextParameter("URL", "U", "Url of api to call", GH_ParamAccess.item);
             pManager.AddBooleanParameter("Run", "R", "Runs component", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("Post", "P", "Is a post call", GH_ParamAccess.item, false);
         }
 
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
@@ -36,17 +37,25 @@ namespace DatawoodGH.Network
         {
             string url = null;
             string result = null;
-            bool enabled = false; 
+            bool run = false;
+            bool post = false;
             DA.SetData("Finished", false);
             if (!DA.GetData("URL", ref url)) return;
-            if (!DA.GetData("Run", ref enabled)) return;
-            
-            if (enabled) {
+            if (!DA.GetData("Run", ref run)) return;
+            DA.GetData("Post", ref post);
+
+            if (run) {
                 try
                 {
                     using (WebClient wc = new WebClient())
                     {
-                        result = wc.DownloadString(url);
+                        if (post) {
+                            //http://127.0.0.1:5000/start_scan/multiangle/single/preset1/C:\\Users\\test\\folder\\newfolder
+                            result = wc.UploadString(url, "POST", string.Empty);
+                        }
+                        else {
+                            result = wc.DownloadString(url); 
+                        }
                     }
 
                     DA.SetData("JSON", result);
