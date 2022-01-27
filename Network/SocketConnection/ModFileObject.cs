@@ -57,7 +57,7 @@ namespace DatawoodGH.Network.SocketConnection
                 Commands.Add(digitalOutpotCommand);
             }
             else if (line.Contains(WAIT_TIME)) { 
-                WaitCommand waitCommand = new WaitCommand();
+                WaitCommand waitCommand = new WaitCommand(line, WaitTimes);
                 Commands.Add(waitCommand);
             }
         }

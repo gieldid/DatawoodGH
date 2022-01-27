@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DatawoodGH.Network.SocketConnection
@@ -15,14 +17,19 @@ namespace DatawoodGH.Network.SocketConnection
         }
 
         private void ReadWaitValue(string line, Dictionary<string,string> waitTimes) {
-            ///TODO: read the wait name and get the value from the dictionary.
-            ///WaitTime Wait000; is an example how it looks in rapid, we want Wait000 to be replaced with dictionary value.
-
+            int openW = line.LastIndexOf('W');
+            int close = line.IndexOf(';');
+            var waitName = line.Substring(openW, close - openW);
+            WaitValue = waitTimes[waitName];
         }
 
         public override async Task SendOverSocket(Socket client)
         {
-            await SendOverSocketCommandBase(client, 1500);
+            var waitTime = Int32.Parse(WaitValue) + WaitTime;
+            await SendOverSocketCommandBase(client);
+            byte[] payload = Encoding.UTF8.GetBytes(WaitValue);
+            client.Send(payload);
+            await Task.Delay(waitTime);
         }
     }
 }

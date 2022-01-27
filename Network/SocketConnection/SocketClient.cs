@@ -119,6 +119,8 @@ namespace DatawoodGH.Network.SocketConnection
 
 
 
+
+
         /// <summary>
         /// The targets to send to the server
         /// </summary>
@@ -146,7 +148,7 @@ namespace DatawoodGH.Network.SocketConnection
                     end_payload = Encoding.UTF8.GetBytes("Sending next target");
                 }
                 client.Send(end_payload);
-                await Task.Delay(500);
+                await Task.Delay(CommandObject.WaitTime);
             }
 
 		}
