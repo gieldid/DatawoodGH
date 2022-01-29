@@ -51,6 +51,8 @@ namespace DatawoodGH.Network
                     {
                         if (post) {
                             //http://127.0.0.1:5000/start_scan/multiangle/single/preset1/C:\\Users\\test\\folder\\newfolder
+                            //URI builder replaces \ with /. Thus the above url won't work. This is why we raplace \ with - so it can be reverted serverside.
+                            url = url.Replace('\\', '-');
                             result = wc.UploadString(url, "POST", string.Empty);
                         }
                         else {
