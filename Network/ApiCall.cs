@@ -22,7 +22,7 @@ namespace DatawoodGH.Network
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddTextParameter("URL", "U", "Url of api to call", GH_ParamAccess.item);
+            pManager.AddTextParameter("URL", "U", "Url of api to call, make sure this url does not contain any - characters", GH_ParamAccess.item);
             pManager.AddBooleanParameter("Run", "R", "Runs component", GH_ParamAccess.item);
             pManager.AddBooleanParameter("Post", "P", "Is a post call", GH_ParamAccess.item, false);
         }
