@@ -28,7 +28,6 @@ jobs:
       with: 
         filename: release.zip
         path: bin\Release
-        directory: bin\Release
         
     - name: Create release
       uses: ncipollo/release-action@v1.9.0
