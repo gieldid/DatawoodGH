@@ -1,0 +1,38 @@
+name: Build grasshopper component
+ 
+on: [push]
+ 
+jobs:
+  build:
+ 
+    runs-on: windows-latest
+ 
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout Code
+     
+    - name: Setup MSBuild Path
+      uses: microsoft/setup-msbuild@v1.1
+       
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.2
+     
+    - name: Restore NuGet Packages
+      run: nuget restore DatawoodGH.sln
+ 
+    - name: Build and Publish Web App
+      run: msbuild DatawoodGH.sln /p:Configuration=Release
+ 
+    - name: Zip Release
+      uses: TheDoctor0/zip-release@0.6.1
+      with: 
+        filename: release.zip
+        path: bin\Release
+        directory: bin\Release
+        
+    - name: Create release
+      uses: ncipollo/release-action@v1.9.0
+      with: 
+        artifacts: "release.zip"
+        token: ${{ secrets.GITHUB_TOKEN }} 
+      
