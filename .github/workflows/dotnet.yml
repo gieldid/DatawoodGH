@@ -1,6 +1,9 @@
 name: Build grasshopper component
  
-on: [push]
+on:
+ push:
+  tags: 
+   - '*'
  
 jobs:
   build:
