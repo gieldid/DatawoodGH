@@ -38,5 +38,7 @@ jobs:
       uses: ncipollo/release-action@v1.9.0
       with: 
         artifacts: "release.zip"
-        token: ${{ secrets.GITHUB_TOKEN }} 
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: v1
+        
       
