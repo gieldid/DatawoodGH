@@ -70,6 +70,12 @@ namespace DatawoodGH.Local
             return files[0];
         }
 
+
+        /// <summary>
+        /// Only keeps the lines based on nStep. nStep = 4 means every 4th line stays.
+        /// </summary>
+        /// <param name="path">Path to the file that needs to be changed</param>
+        /// <param name="nStep"></param>
         private void RemoveLines(string path , int nStep) {
             string tempFile = Path.GetTempFileName();
 
