@@ -1,11 +1,8 @@
-name: Build grasshopper component
- 
+name: Build grasshopper component 
 on:
- push:
-  branches:
-   - main
+ create:
   tags: 
-   - v1.*
+   - v*
  
 jobs:
   build:
