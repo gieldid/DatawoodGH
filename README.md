@@ -37,7 +37,7 @@
       <li><a href="https://github.com/gieldid/DatawoodGH/blob/main/Local/CsvCreator.cs">Csv creator</a></li>
       <li><a href="https://github.com/gieldid/DatawoodGH/blob/main/Local/PcdConverter.cs">Pointcloud converter</a></li>
       <li><a href="https://github.com/gieldid/DatawoodGH/blob/main/Network/FtpTransfer.cs">FTP transfer</a></li>
-      <li><a href="https://github.com/gieldid/DatawoodGH/blob/main/Network/ApiCall.cs">API call</a></li>
+      <li><a href="https://github.com/gieldid/DatawoodGH/blob/main/Network/ApiCall.cs">Http call (POST or GET)</a></li>
       <li><a href="https://github.com/gieldid/DatawoodGH/blob/main/Network/SocketConnection/SocketClient.cs">Socket client</a></li>
     </ol>
 </div>
