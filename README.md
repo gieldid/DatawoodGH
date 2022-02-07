@@ -93,7 +93,7 @@ be able to see the components underneath the datawood tab.
 
 <!-- GETTING STARTED -->
 ## Getting Started
-
+Run the application is the 
 
 
 ### Installation
@@ -146,4 +146,4 @@ Project Link: [https://github.com/gieldid/datawoodgh](https://github.com/gieldid
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/giel-jurriëns/
 [release-url]:https://github.com/gieldid/DatawoodGH/releases
-[product-screenshot]: Resources/Screenshots/datawoodPostcall.png
+[product-screenshot]: Resources/Screenshots/datawoodGHPostcall.png
