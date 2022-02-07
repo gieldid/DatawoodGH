@@ -101,9 +101,9 @@ Before running the datawood project grasshopper file you'll have to install the 
 
   
 * [Rhino3d](https://www.rhino3d.com/) 
-* [jSwan](https://www.food4rhino.com/en/app/jswan) download the zip file*1 
+* [jSwan](https://www.food4rhino.com/en/app/jswan) download the zip file *1 
 * [Woodintake](https://gitlab.techniek.hva.nl/robotlab/wood/woodintake) follow the readme instructions and run the server.
-* Download the [DatawoodGH](https://github.com/gieldid/DatawoodGH/releases/tag/v1.2.1) release.zip*1
+* Download the [DatawoodGH](https://github.com/gieldid/DatawoodGH/releases/tag/v1.2.1) release.zip *1
 
 *1 right click > properties > check unblock and extraxt the zip file in the C:\Users\"USERNAME"\AppData\Roaming\Grasshopper\Libraries folder.
 
