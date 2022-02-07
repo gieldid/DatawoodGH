@@ -110,7 +110,7 @@ Before running the datawood project grasshopper file you'll have to install the 
 
 ### Run
 
-Download the gha file and open it with grasshopper. Change the ip adresses to the correct robots and servers.
+[Download the gh file](https://gitlab.techniek.hva.nl/GielJurriens/datawoodgh/-/blob/main/Resources/Grasshopper/Data%20Wood_WIP.gh) and open it with grasshopper. Change the ip adresses to the correct robots and servers.
 Make sure the servers are running for the [weightscale](https://github.com/gieldid/Datawood-webserver) and the [color camera](https://github.com/gieldid/pictureServerNodejs).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
