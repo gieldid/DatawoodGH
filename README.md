@@ -87,13 +87,25 @@ be able to see the components underneath the datawood tab.
 * [Rhino3d](https://www.rhino3d.com/)
 * [Grasshopper](https://www.rhino3d.com/6/new/grasshopper/)
 
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
-Run the application is the 
+In this chapter we'll explain how you can get the project to run and do a simple scan and get some data into the csv file.
+
+### Prerequisites
+Before running the datawood project grasshopper file you'll have to install the following programs:
+
+  
+* [Rhino3d](https://www.rhino3d.com/) 
+* [jSwan](https://www.food4rhino.com/en/app/jswan) download the zip file*1 
+* [Woodintake](https://gitlab.techniek.hva.nl/robotlab/wood/woodintake) follow the readme instructions and run the server.
+* Download the [DatawoodGH](https://github.com/gieldid/DatawoodGH/releases/tag/v1.2.1) release.zip*1
+
+*1 right click > properties > check unblock and extraxt the zip file in the C:\Users\"USERNAME"\AppData\Roaming\Grasshopper\Libraries folder.
 
 
 ### Installation
