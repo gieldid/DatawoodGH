@@ -136,7 +136,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- CONTACT -->
 ## Contact
 
-Giel Jurriëns - [@giela1](https://twitter.com/giela1) - gieldid@gmail.com
+Giel Jurriëns - gieldid@gmail.com
 
 Project Link: [https://github.com/gieldid/datawoodgh](https://github.com/gieldid/datawoodgh)
 
