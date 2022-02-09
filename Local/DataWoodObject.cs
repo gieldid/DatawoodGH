@@ -21,6 +21,12 @@ namespace DatawoodGH
         public string PicturePath { get; set; }
         public string Location { get; set; }
 
+
+        /// <summary>
+        /// Check if objects are identical to each other. Does not check on Indexed.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(Object obj)
         {
             if (obj == null)

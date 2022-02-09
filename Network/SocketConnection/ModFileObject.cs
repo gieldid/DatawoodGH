@@ -28,6 +28,10 @@ namespace DatawoodGH.Network.SocketConnection
             ReadModFile(path);
         }
 
+        /// <summary>
+        /// Reads out the modfile line by line, and look for commands, speeds, zones and waittimes.
+        /// </summary>
+        /// <param name="path">Path to the modfile</param>
         private void ReadModFile(string path) {
             string[] lines = System.IO.File.ReadAllLines(path);
 
@@ -40,6 +44,10 @@ namespace DatawoodGH.Network.SocketConnection
             }
         }
 
+        /// <summary>
+        /// Reads out the following commands from a line: MoveL, MoveAbsJ, Setdo and waittime.
+        /// </summary>
+        /// <param name="line"></param>
         private void ReadCommands(string line) {
             if (line.Contains(MoveL))
             {
@@ -62,6 +70,10 @@ namespace DatawoodGH.Network.SocketConnection
             }
         }
 
+        /// <summary>
+        /// Reads the predfined speeds in a rapid file line and puts them in a library.
+        /// </summary>
+        /// <param name="line"></param>
         private void ReadSpeeds(string line) {
             if (line.Contains("speeddata")) {
                 var startName = Utils.GetNthIndex(line, 'S', 3);
@@ -77,6 +89,10 @@ namespace DatawoodGH.Network.SocketConnection
             }
         }
 
+        /// <summary>
+        /// Reads the predefined zones in a line, and puts them in a library.
+        /// </summary>
+        /// <param name="line"></param>
         private void ReadZones(string line) {
             if (line.Contains("zonedata"))
             {
@@ -93,6 +109,10 @@ namespace DatawoodGH.Network.SocketConnection
             }
         }
 
+        /// <summary>
+        /// Reads the predefined waittimes in a line, and puts them in a library.
+        /// </summary>
+        /// <param name="line"></param>
         private void ReadWaitTimes(string line) {
             if (line.Contains("PERS num Wait")) {
                 string waitValue = new string(line.SkipWhile(c => c != '=')
