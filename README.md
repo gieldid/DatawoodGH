@@ -113,6 +113,18 @@ Before running the datawood project grasshopper file you'll have to install the 
 [Download the gh file](https://gitlab.techniek.hva.nl/GielJurriens/datawoodgh/-/blob/main/Resources/Grasshopper/Data%20Wood_WIP.gh) and open it with grasshopper. Change the ip adresses to the correct robots and servers.
 Make sure the servers are running for the [weightscale](https://github.com/gieldid/Datawood-webserver) and the [color camera](https://github.com/gieldid/pictureServerNodejs).
 
+To run the socket client you'll need to put the [Socket_Server.mod and Socket_Server.pgf](Network/RAPID) on the robot that you want to control, and run that file. In grasshopper you'll have to enter the ip(10.0.0.12 or 10.0.0.13) of the robot(Make sure this ip is also in the Socket_server.mod file) and the port by default this is 1025. You also have to give the path to the rapid file you want to send over to the robot. 
+The socket client only reads out the following commands from the given rapid file: MoveL, MoveAbsj, setDO and waittime. 
+
+The pcd converter is used to convert the .pcd file to a .txt(required for grasshopper and javid's script) file and remove lines below a given z value and lower the resolution by choosing how many lines you want to keep (if you want to keep every 10th line set nstep to 10), this can reduce the file from 1000000 to 3000.
+
+The API call is used to make a post or a get call to a given endpoint and gets a json return value. This is done to get data from the raspberrypi's (scale and camera use get), or to control the [trispector](https://gitlab.techniek.hva.nl/robotlab/wood/woodintake) via a post call.
+
+The FTP component is used to establish an ftp connection, in our case this is mainly used to get the picture from the raspberrypi controlling the camera. It requires a PS path of the file you want to download, PC path where you want to download the file to. 
+
+The CSV component creates or appends to a csv file and writes a line based on the given parameters, this is done at the end of the process to create a database of woodenobjects.
+
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
