@@ -23,7 +23,7 @@ namespace DatawoodGH.Network
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddTextParameter("URL", "U", "Url of api to call, make sure this url does not contain any - characters", GH_ParamAccess.item);
-            pManager.AddBooleanParameter("Run", "R", "Runs component", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("Run", "R", "Runs component", GH_ParamAccess.item, true);
             pManager.AddBooleanParameter("Post", "P", "Is a post call", GH_ParamAccess.item, false);
         }
 
@@ -41,7 +41,7 @@ namespace DatawoodGH.Network
             bool post = false;
             DA.SetData("Finished", false);
             if (!DA.GetData("URL", ref url)) return;
-            if (!DA.GetData("Run", ref run)) return;
+            DA.GetData("Run", ref run);
             DA.GetData("Post", ref post);
 
             if (run) {
@@ -51,7 +51,7 @@ namespace DatawoodGH.Network
                     {
                         if (post) {
                             //http://127.0.0.1:5000/start_scan/multiangle/single/preset1/C:\\Users\\test\\folder\\newfolder
-                            //URI builder replaces \ with /. Thus the above url won't work. This is why we raplace \ with - so it can be reverted serverside.
+                            //URI builder replaces \ with /. Thus the above url won't work. This is why we replace \ with - so it can be reverted serverside.
                             url = url.Replace('\\', '-');
                             result = wc.UploadString(url, "POST", string.Empty);
                         }

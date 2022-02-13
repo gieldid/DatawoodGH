@@ -115,7 +115,8 @@ namespace DatawoodGH.Network.SocketConnection
                 client.Close();
                 throw new Exception("Can't connect to server");
             }
-            this.Message = "Socket connected to "+ client.RemoteEndPoint.ToString();
+
+            Message = "Socket connected to "+ client.RemoteEndPoint.ToString();
      
             byte[] payload = Encoding.UTF8.GetBytes("listening?");
             client.Send(payload);
@@ -123,16 +124,12 @@ namespace DatawoodGH.Network.SocketConnection
             byte[] bytes = new byte[1024];
             int bytesRec = client.Receive(bytes);
             string answer = Encoding.UTF8.GetString(bytes, 0, bytesRec);
-            this.Message = "Received the following: " + answer;
+            Message = "Received the following: " + answer;
             if (answer != "Yes") {
                 CloseConnection(client);
             }
             return client;
         }
-
-
-
-
 
         /// <summary>
         /// The targets to send to the server
@@ -140,7 +137,11 @@ namespace DatawoodGH.Network.SocketConnection
         /// <param name="client"></param>
         /// <param name="targets"></param>
         private async Task SendCommands(Socket client, List<CommandObject> commands) {
-			for (int i = 0; i < commands.Count; i++)
+            //Sets the timeout back to infinite(0),
+            //this is done because the robot might be moving for 10+ seconds and the receive might timeoute because of it.
+            client.SendTimeout = 0;
+            client.ReceiveTimeout = 0;
+            for (int i = 0; i < commands.Count; i++)
 			{
                 await commands[i].SendOverSocket(client);
 
@@ -155,7 +156,7 @@ namespace DatawoodGH.Network.SocketConnection
                 byte[] end_payload;
                 if (i == commands.Count -1)
                 {
-                     end_payload = Encoding.UTF8.GetBytes("No more targets");
+                    end_payload = Encoding.UTF8.GetBytes("No more targets");
                 }
                 else {
                     end_payload = Encoding.UTF8.GetBytes("Sending next target");

@@ -9,7 +9,7 @@ namespace DatawoodGH.Network.SocketConnection
 {
     public abstract class CommandObject
     {
-        public const int WaitTime = 200;
+        public const int WaitTime = 500;
         public string Name { get; set; }
 
         public abstract Task SendOverSocket(Socket client);

@@ -26,10 +26,6 @@
     PERS tooldata T_TEXT_01:=[TRUE,[[-90.442,-25.934,132.491],[0.77729,-0.25919,-0.06870,0.56914]],[3.000,[-90.442,-25.934,132.491],[1,0,0,0],0,0,0]];
     PERS tooldata Ad_Gripper_2:=[TRUE,[[0.000,-25.000,148.000],[1.00000,0.00000,0.00000,0.00000]],[1.000,[0.000,-25.000,148.000],[1,0,0,0],0,0,0]];
     TASK PERS wobjdata DefaultFrame:=[FALSE,TRUE,"",[[0.000,0.000,0.000],[1.00000,0.00000,0.00000,0.00000]],[[0,0,0],[1,0,0,0]]];
-    TASK PERS speeddata Speed000:=[100.000,180.000,5000.000,1080.000];
-    TASK PERS speeddata Speed001:=[20.000,180.000,5000.000,1080.000];
-    TASK PERS zonedata Zone000:=[FALSE,5.000,5.000,5.000,0.500,5.000,0.500];
-    PERS num Wait000:=1;
     
     VAR speeddata current_speed;
     VAR zonedata current_zone;
@@ -40,7 +36,7 @@
     PROC main()
         ConfL \Off;
         SocketCreate server_socket;
-        SocketBind server_socket, "10.0.0.13", 1025;
+        SocketBind server_socket, "127.0.0.1", 1025;
 		SocketListen server_socket;
 	
         WHILE TRUE DO
@@ -58,21 +54,10 @@
                     ELSEIF recv_method = "Wait" THEN
                         WaitCommand;
                     ENDIF
-
-                    SocketSend client_socket \Str:="Ready";
-                    SocketReceive client_socket \Str:=recv_next_target \Time:=WAIT_MAX;
-                    IF recv_next_target = "No more targets" THEN
-                        keep_receiving_targets:= FALSE;
-                        SocketClose client_socket;
-                    ENDIF
+                    Confirmation;
                 ENDWHILE
             ENDIF
         ENDWHILE
-        !ERROR
-           ! IF ERRNO=ERR_SOCK_TIMEOUT THEN
-               ! keep_scanning := FALSE;
-                !RETURN;
-            !ENDIF
     UNDO
         SocketClose client_socket;
 		SocketClose server_socket;
@@ -99,6 +84,18 @@
         ENDIF
         WaitTime \InPos,0;
     ENDPROC
+    
+    !Confirms if there are more commands to receive.
+    PROC Confirmation()
+        ! Add code for your procedure here.
+        SocketSend client_socket \Str:="Ready";
+        SocketReceive client_socket \Str:=recv_next_target \Time:=WAIT_MAX;
+        IF recv_next_target = "No more targets" THEN
+            keep_receiving_targets:= FALSE;
+            SocketClose client_socket;
+        ENDIF
+    ENDPROC
+    
     
     PROC DOCommand()
         SocketReceive client_socket \Str:=recv_valve \Time:=WAIT_MAX;
