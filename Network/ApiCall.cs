@@ -56,6 +56,8 @@ namespace DatawoodGH.Network
                             result = wc.UploadString(url, "POST", string.Empty);
                         }
                         else {
+
+                            //this is the get call
                             result = wc.DownloadString(url); 
                         }
                     }
