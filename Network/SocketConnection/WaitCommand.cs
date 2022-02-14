@@ -37,7 +37,7 @@ namespace DatawoodGH.Network.SocketConnection
 
 
         private int ConvertSecToMs(float waitValue) {
-            int waitTimeMS = (int)(WaitTime * 1000);
+            int waitTimeMS = (int)(waitValue * 1000);
             return waitTimeMS;
         }
     }

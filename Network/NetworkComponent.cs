@@ -14,4 +14,12 @@ namespace DatawoodGH.Network
 		{ 
 		}
 	}
+
+	abstract public class TaskCapableNetworkComponent<T> : GH_TaskCapableComponent<T>
+	{
+		public TaskCapableNetworkComponent(string name, string nickname, string description)
+			: base(name, nickname, description, "Datawood", "Network")
+		{
+		}
+	}
 }

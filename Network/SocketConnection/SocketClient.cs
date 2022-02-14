@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 
 namespace DatawoodGH.Network.SocketConnection
 {
-    public class SocketClient : NetworkComponent
+    public class SocketClient : TaskCapableNetworkComponent<SolveResults>
     {
+        //Timeout for connecting to socket server in ms
         public const int TimeOut = 5000;
         /// <summary>
         /// Initializes a new instance of the WebSocketComponent class.
@@ -28,7 +29,6 @@ namespace DatawoodGH.Network.SocketConnection
         {
             pManager.AddTextParameter("Ip", "IP", "IP to make a web socket connection to", GH_ParamAccess.item);
             pManager.AddIntegerParameter("Port","P","Port for the socket connection",GH_ParamAccess.item);
-            //pManager.AddTextParameter("Targets", "T", "Robottargets", GH_ParamAccess.list);
             pManager.AddTextParameter("Mod file", "m", "Mod file to read", GH_ParamAccess.item);
             pManager.AddBooleanParameter("Run", "R", "When to run", GH_ParamAccess.item, true);
             
@@ -41,49 +41,101 @@ namespace DatawoodGH.Network.SocketConnection
         {
             pManager.AddBooleanParameter("Finished","f","finished",GH_ParamAccess.item);
         }
+       
 
         /// <summary>
         /// This is the method that actually does the work.
         /// </summary>
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
-        protected override async void SolveInstance(IGH_DataAccess DA)
+        protected override void SolveInstance(IGH_DataAccess DA)
         {
-            string ip = null;
-            int port = 0;
-            bool run = true;
-            string path = null;
-            //List<string> targets = new List<string>();
+            if (InPreSolve)
+            {
+                string ip = null;
+                int port = 0;
+                bool run = true;
+                string path = null;
 
-            if (!DA.GetData("Ip", ref ip)) {
-                return;
-            }
-
-            if (!DA.GetData("Port", ref port)) {
-                return;
-            }
-
-            //if (!DA.GetDataList("Targets", targets)) {
-            //    return;
-            //}
-
-            if (!DA.GetData("Mod file", ref path)) {
-                return;
-            }
-
-            DA.GetData("Run", ref run);
-            if (run) {
-                ModFileObject mod = new ModFileObject(path);
-                try
+                if (!DA.GetData("Ip", ref ip))
                 {
-                    Socket client = SocketConnection(ip, port);
-                    await SendCommands(client, mod.Commands);
-                    CloseConnection(client);
-                    DA.SetData("Finished", true);
+                    return;
                 }
-                catch (Exception ex) { 
-                    this.Message = ex.Message;   
+
+                if (!DA.GetData("Port", ref port))
+                {
+                    return;
                 }
+
+                if (!DA.GetData("Mod file", ref path))
+                {
+                    return;
+                }
+                DA.GetData("Run", ref run);
+                if (!run) {
+                    return;
+                }
+                Task<SolveResults> task = Task.Run(() => ComputeSockets(path, ip, port), CancelToken);
+                TaskList.Add(task);
+                return;
             }
+
+            if(!GetSolveResults(DA, out SolveResults result)) {
+
+                string ip = null;
+                int port = 0;
+                bool run = true;
+                string path = null;
+
+                if (!DA.GetData("Ip", ref ip))
+                {
+                    return;
+                }
+
+                if (!DA.GetData("Port", ref port))
+                {
+                    return;
+                }
+
+                if (!DA.GetData("Mod file", ref path))
+                {
+                    return;
+                }
+                DA.GetData("Run", ref run);
+                if (!run)
+                {
+                    return;
+                }
+
+                result = ComputeSockets(path, ip, port);
+            }
+
+
+            if (result != null) {
+                DA.SetData("Finished", result.Value);
+            } 
+        }
+
+        private SolveResults ComputeSockets(string path, string ip, int port) {
+            SolveResults result = new SolveResults
+            {
+                Value = false
+            };
+            ModFileObject mod = new ModFileObject(path);
+            try
+            {
+                Socket client = SocketConnection(ip, port);
+                Task task = SendCommands(client, mod.Commands);
+                task.Wait();
+                CloseConnection(client);
+                result.Value = true;
+
+            }
+            catch (Exception ex)
+            {
+                result.Value = false;
+                Message = ex.Message;
+            }
+            return result;
         }
 
         /// <summary>
