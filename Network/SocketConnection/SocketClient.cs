@@ -71,7 +71,6 @@ namespace DatawoodGH.Network.SocketConnection
             }
 
             DA.GetData("Run", ref run);
-            DA.SetData("Finished", false);
             if (run) {
                 ModFileObject mod = new ModFileObject(path);
                 try

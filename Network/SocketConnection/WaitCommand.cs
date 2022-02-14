@@ -25,12 +25,20 @@ namespace DatawoodGH.Network.SocketConnection
 
         public override async Task SendOverSocket(Socket client)
         {
-            var waitTime = float.Parse(WaitValue);
-            int waitTimeInt = (int)(waitTime * 1000) + WaitTime;  
+            //String to float
+            var waitValueFloat = float.Parse(WaitValue);
+            //Waitvalue to waittime
+            int waitTimeInt = ConvertSecToMs(waitValueFloat) + WaitTime;  
             await SendOverSocketCommandBase(client);
             byte[] payload = Encoding.UTF8.GetBytes(WaitValue);
             client.Send(payload);
             await Task.Delay(waitTimeInt);
+        }
+
+
+        private int ConvertSecToMs(float waitValue) {
+            int waitTimeMS = (int)(WaitTime * 1000);
+            return waitTimeMS;
         }
     }
 }
