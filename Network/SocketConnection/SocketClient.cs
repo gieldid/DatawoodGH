@@ -13,6 +13,7 @@ namespace DatawoodGH.Network.SocketConnection
     {
         //Timeout for connecting to socket server in ms
         public const int TimeOut = 5000;
+        public const int TimeoutAfterConnect = 30000;
         /// <summary>
         /// Initializes a new instance of the WebSocketComponent class.
         /// </summary>
@@ -190,8 +191,8 @@ namespace DatawoodGH.Network.SocketConnection
         private async Task SendCommands(Socket client, List<CommandObject> commands) {
             //Sets the timeout back to infinite(0),
             //this is done because the robot might be moving for 10+ seconds and the receive might timeoute because of it.
-            client.SendTimeout = 0;
-            client.ReceiveTimeout = 0;
+            client.SendTimeout = TimeoutAfterConnect;
+            client.ReceiveTimeout = TimeoutAfterConnect;
             for (int i = 0; i < commands.Count; i++)
 			{
                 await commands[i].SendOverSocket(client);

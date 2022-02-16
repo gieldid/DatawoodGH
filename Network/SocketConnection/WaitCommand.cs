@@ -27,7 +27,7 @@ namespace DatawoodGH.Network.SocketConnection
         {
             //String to float
             var waitValueFloat = float.Parse(WaitValue);
-            //Waitvalue to waittime
+            //Waitvalue to int
             int waitTimeInt = ConvertSecToMs(waitValueFloat) + WaitTime;  
             await SendOverSocketCommandBase(client);
             byte[] payload = Encoding.UTF8.GetBytes(WaitValue);
