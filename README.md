@@ -130,8 +130,9 @@ The CSV component creates or appends to a csv file and writes a line based on th
 
 <!-- CONTRIBUTING -->
 ## Contributing
+To be able to contribute follow the [tutorial](https://developer.rhino3d.com/guides/grasshopper/installing-tools-windows/). 
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+More tutorials about custom grasshoper components can be found [here](https://developer.rhino3d.com/guides/grasshopper/).
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
@@ -141,6 +142,8 @@ Don't forget to give the project a star! Thanks again!
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
